@@ -16,11 +16,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         
-        let trackerVC = TrackerController()
+        let trackerVC = TrackerViewController()
         let statisticsVC = StatisticsController()
         
-        let trackerImage = UIImage(named: "trackers")
-        let statisticsImage = UIImage(named: "stats")
+        let trackerImage = UIImage(named: "Tracker")
+        let statisticsImage = UIImage(named: "Stats")
         
         trackerVC.tabBarItem = UITabBarItem(title: "Трекеры", image: trackerImage, tag: 0)
         statisticsVC.tabBarItem = UITabBarItem(title: "Статистика", image: statisticsImage, tag: 1)
@@ -31,7 +31,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let tabBarController = UITabBarController()
         tabBarController.viewControllers = [trackerNavController, statisticsNavController]
         
-        tabBarController.tabBar.tintColor = UIColor(named: "YAblue")
+        tabBarController.tabBar.tintColor = .ypBlue
         
         window?.rootViewController = tabBarController
         window?.makeKeyAndVisible()

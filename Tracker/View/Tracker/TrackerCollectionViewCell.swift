@@ -12,21 +12,71 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     static let identifier = "TrackersCell"
     
     weak var delegate: TrackerCellDelegate?
-    private var id: UUID?
-    private var indexPath: IndexPath?
+    var id: UUID?
+    var indexPath: IndexPath?
     
-    private let trackerView = UIView()
-    private let emojiLabel = UILabel()
-    private let emojiView = UIView()
-    private let nameLabel = UILabel()
+    private let trackerView: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 16
+        view.layer.masksToBounds = true
+        return view
+    }()
     
-    private let actionView = UIView()
-    private let countDayLabel = UILabel()
-    private let trackButton = UIButton(type: .custom)
+    private let emojiLabel: UILabel = {
+        let view = UILabel()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.textAlignment = .center
+        view.font = .systemFont(ofSize: 12)
+        return view
+    }()
+    
+    private let emojiView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .ypBackground
+        view.layer.masksToBounds = true
+        view.layer.cornerRadius = 12
+        return view
+    }()
+    
+    private let nameLabel: UILabel = {
+        let view = UILabel()
+        view.textColor = .ypWhite
+        view.numberOfLines = 2
+        view.textAlignment = .left
+        view.lineBreakMode = .byWordWrapping
+        view.font = .systemFont(ofSize: 12, weight: .medium)
+        return view
+    }()
+    
+    private let actionView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .ypWhite
+        view.layer.cornerRadius = 16
+        view.layer.masksToBounds = true
+        return view
+    }()
+    
+    private let countDayLabel: UILabel = {
+        let view = UILabel()
+        view.font = .systemFont(ofSize: 12, weight: .medium)
+        view.textColor = .ypBlack
+        return view
+    }()
+    
+    private let trackButton: UIButton = {
+        let view = UIButton(type: .custom)
+        view.imageEdgeInsets = UIEdgeInsets(top: 11, left: 11, bottom: 11, right: 11)
+        view.layer.masksToBounds = true
+        view.layer.cornerRadius = 16
+        view.tintColor = .ypWhite
+        return view
+    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        initMainView()
+        
+        trackButton.addTarget(self, action: #selector(trackButtonTapped), for: .touchUpInside)
+        
         setupConstraints()
     }
 
@@ -34,78 +84,25 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func initMainView() {
-        initTrackerView()
-        initActionView()
-        
-        contentView.addSubview(trackerView)
-        contentView.addSubview(actionView)
-    }
-    
-    private func initTrackerView() {
-        trackerView.translatesAutoresizingMaskIntoConstraints = false
-        trackerView.layer.cornerRadius = 16
-        trackerView.layer.masksToBounds = true
-        
-        initEmoji()
-        initNameLabel()
-        
-        trackerView.addSubview(emojiView)
-        trackerView.addSubview(nameLabel)
-    }
-    
-    private func initEmoji() {
-        emojiView.translatesAutoresizingMaskIntoConstraints = false
-        emojiView.backgroundColor = .ypBackground
-        emojiView.layer.masksToBounds = true
-        emojiView.layer.cornerRadius = 12
-        
-        emojiLabel.translatesAutoresizingMaskIntoConstraints = false
-        emojiLabel.textAlignment = .center
-        emojiLabel.font = .systemFont(ofSize: 12)
-        emojiView.addSubview(emojiLabel)
-    }
-    
-    private func initNameLabel() {
-        nameLabel.translatesAutoresizingMaskIntoConstraints = false
-        nameLabel.textColor = .ypWhite
-        nameLabel.numberOfLines = 2
-        nameLabel.textAlignment = .left
-        nameLabel.lineBreakMode = .byWordWrapping
-        nameLabel.font = .systemFont(ofSize: 12, weight: .medium)
-    }
-    
-    private func initActionView() {
-        actionView.translatesAutoresizingMaskIntoConstraints = false
-        actionView.backgroundColor = .ypWhite
-        actionView.layer.cornerRadius = 16
-        actionView.layer.masksToBounds = true
-        
-        initDayLabel()
-        initTrackButton()
-        
-        actionView.addSubview(countDayLabel)
-        actionView.addSubview(trackButton)
-    }
-    
-    
-    private func initDayLabel() {
-        countDayLabel.translatesAutoresizingMaskIntoConstraints = false
-        countDayLabel.font = .systemFont(ofSize: 12, weight: .medium)
-        countDayLabel.textColor = .ypBlack
-    }
-    
-    private func initTrackButton() {
-        trackButton.translatesAutoresizingMaskIntoConstraints = false
-        trackButton.imageEdgeInsets = UIEdgeInsets(top: 11, left: 11, bottom: 11, right: 11)
-        trackButton.layer.masksToBounds = true
-        trackButton.layer.cornerRadius = 16
-        trackButton.tintColor = .ypWhite
-        trackButton.addTarget(self, action: #selector(trackButtonTapped), for: .touchUpInside)
-    }
-    
-    
     private func setupConstraints() {
+        [trackerView, actionView].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            contentView.addSubview($0)
+        }
+        
+        [emojiView, nameLabel].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            trackerView.addSubview($0)
+        }
+        
+        emojiView.addSubview(emojiLabel)
+        
+        [countDayLabel, trackButton].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            actionView.addSubview($0)
+        }
+        
+        
         NSLayoutConstraint.activate([
             trackerView.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor),
             trackerView.widthAnchor.constraint(equalToConstant: 167),
@@ -139,10 +136,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    func initByData(id: UUID, indexPath: IndexPath, emoji: String, name: String, color: UIColor, countCompleted: Int, isCompleted: Bool, isEnabled: Bool) {
-        self.id = id
-        self.indexPath = indexPath
-        
+    func update(emoji: String, name: String, color: UIColor, countCompleted: Int, isCompleted: Bool, isEnabled: Bool) {
         emojiLabel.text = emoji
         nameLabel.text = name
         trackerView.backgroundColor = color
@@ -151,7 +145,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         setImageTrackButton(isCompleted: isCompleted, isEnabled: isEnabled)
     }
 
-    func getCounDayStr(from count: Int) -> String {
+    private func getCounDayStr(from count: Int) -> String {
         let lastDigit = count % 10
         let lastTwoDigits = count % 100
         
@@ -166,9 +160,12 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func setImageTrackButton(isCompleted: Bool, isEnabled: Bool) {
+    private func setImageTrackButton(isCompleted: Bool, isEnabled: Bool) {
         let imageName = isCompleted ? "Done" : "PlusTask"
         if let image = UIImage(named: imageName)?.withRenderingMode(.alwaysTemplate) {
+            if isCompleted {
+                trackButton.backgroundColor = trackButton.backgroundColor?.withAlphaComponent(0.3)
+            }
             trackButton.setImage(image, for: .normal)
         }
         

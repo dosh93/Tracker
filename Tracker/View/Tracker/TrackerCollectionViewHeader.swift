@@ -12,11 +12,17 @@ final class TrackerCollectionViewHeader: UICollectionReusableView {
     
     static let identifier = "header"
     
-    let headerLabel = UILabel()
+    let headerLabel: UILabel = {
+        let view = UILabel()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.textColor = .ypBlack
+        view.font = .systemFont(ofSize: 19, weight: .bold)
+        return view
+    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        initHeaderLabel()
+
         setupConstraints()
     }
     
@@ -24,14 +30,9 @@ final class TrackerCollectionViewHeader: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func initHeaderLabel() {
-        headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.textColor = .ypBlack
-        headerLabel.font = .systemFont(ofSize: 19, weight: .bold)
-        addSubview(headerLabel)
-    }
-    
     private func setupConstraints() {
+        addSubview(headerLabel)
+        
         NSLayoutConstraint.activate([
             headerLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
             headerLabel.centerYAnchor.constraint(equalTo: centerYAnchor),

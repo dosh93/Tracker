@@ -8,6 +8,6 @@
 import Foundation
 
 struct TrackerRecord {
-    let idTracker: UUID
+    let id: UUID
     let date: Date
 }

@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		091628042BBDBD8B0020683A /* RegularActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 091628032BBDBD8B0020683A /* RegularActionViewController.swift */; };
 		091628062BBDC4A50020683A /* SheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 091628052BBDC4A50020683A /* SheduleViewController.swift */; };
 		091628082BBDC4EB0020683A /* SheduleViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 091628072BBDC4EB0020683A /* SheduleViewControllerDelegate.swift */; };
 		0916280A2BBDC8840020683A /* WeekdayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 091628092BBDC8840020683A /* WeekdayCell.swift */; };
@@ -16,7 +15,6 @@
 		0918C4A52BB9A8C4001F018E /* TrackerCellDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0918C4A42BB9A8C4001F018E /* TrackerCellDelegate.swift */; };
 		0918C4A72BB9AF84001F018E /* Weekday.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0918C4A62BB9AF84001F018E /* Weekday.swift */; };
 		097D0CE42BBB196400385F44 /* CreateTrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 097D0CE32BBB196400385F44 /* CreateTrackerViewController.swift */; };
-		097D0CE62BBB25E800385F44 /* UnregularActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 097D0CE52BBB25E800385F44 /* UnregularActionViewController.swift */; };
 		098A83362B9DE89D0037964B /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098A83352B9DE89D0037964B /* Tracker.swift */; };
 		098A83382B9DEAB40037964B /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098A83372B9DEAB30037964B /* TrackerCategory.swift */; };
 		098A833A2B9DEAF30037964B /* TrackerRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098A83392B9DEAF30037964B /* TrackerRecord.swift */; };
@@ -28,10 +26,11 @@
 		09E147122B9CDB0C00183756 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 09E147112B9CDB0C00183756 /* Assets.xcassets */; };
 		09E147152B9CDB0C00183756 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 09E147132B9CDB0C00183756 /* LaunchScreen.storyboard */; };
 		09E1471D2B9CE51C00183756 /* StatisticsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E1471C2B9CE51C00183756 /* StatisticsController.swift */; };
+		09E80C9C2BBF1F360043661C /* TypeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E80C9B2BBF1F360043661C /* TypeView.swift */; };
+		09E80C9E2BBF1FE70043661C /* ActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E80C9D2BBF1FE70043661C /* ActionViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		091628032BBDBD8B0020683A /* RegularActionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularActionViewController.swift; sourceTree = "<group>"; };
 		091628052BBDC4A50020683A /* SheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheduleViewController.swift; sourceTree = "<group>"; };
 		091628072BBDC4EB0020683A /* SheduleViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheduleViewControllerDelegate.swift; sourceTree = "<group>"; };
 		091628092BBDC8840020683A /* WeekdayCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekdayCell.swift; sourceTree = "<group>"; };
@@ -40,7 +39,6 @@
 		0918C4A42BB9A8C4001F018E /* TrackerCellDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCellDelegate.swift; sourceTree = "<group>"; };
 		0918C4A62BB9AF84001F018E /* Weekday.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weekday.swift; sourceTree = "<group>"; };
 		097D0CE32BBB196400385F44 /* CreateTrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTrackerViewController.swift; sourceTree = "<group>"; };
-		097D0CE52BBB25E800385F44 /* UnregularActionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnregularActionViewController.swift; sourceTree = "<group>"; };
 		098A83352B9DE89D0037964B /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		098A83372B9DEAB30037964B /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
 		098A83392B9DEAF30037964B /* TrackerRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecord.swift; sourceTree = "<group>"; };
@@ -54,6 +52,8 @@
 		09E147142B9CDB0C00183756 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		09E147162B9CDB0C00183756 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		09E1471C2B9CE51C00183756 /* StatisticsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsController.swift; sourceTree = "<group>"; };
+		09E80C9B2BBF1F360043661C /* TypeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeView.swift; sourceTree = "<group>"; };
+		09E80C9D2BBF1FE70043661C /* ActionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,13 +98,13 @@
 			isa = PBXGroup;
 			children = (
 				097D0CE32BBB196400385F44 /* CreateTrackerViewController.swift */,
-				097D0CE52BBB25E800385F44 /* UnregularActionViewController.swift */,
 				09AB3A1E2BBC6E6E009ACB66 /* SettingActionCell.swift */,
 				09AB3A202BBC8FC6009ACB66 /* CreateTrackerViewControllerDelegate.swift */,
-				091628032BBDBD8B0020683A /* RegularActionViewController.swift */,
 				091628052BBDC4A50020683A /* SheduleViewController.swift */,
 				091628072BBDC4EB0020683A /* SheduleViewControllerDelegate.swift */,
 				091628092BBDC8840020683A /* WeekdayCell.swift */,
+				09E80C9B2BBF1F360043661C /* TypeView.swift */,
+				09E80C9D2BBF1FE70043661C /* ActionViewController.swift */,
 			);
 			path = CreateTracker;
 			sourceTree = "<group>";
@@ -223,7 +223,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				09AB3A1F2BBC6E6E009ACB66 /* SettingActionCell.swift in Sources */,
-				091628042BBDBD8B0020683A /* RegularActionViewController.swift in Sources */,
 				0916280A2BBDC8840020683A /* WeekdayCell.swift in Sources */,
 				0918C4A72BB9AF84001F018E /* Weekday.swift in Sources */,
 				098A83382B9DEAB40037964B /* TrackerCategory.swift in Sources */,
@@ -231,16 +230,17 @@
 				0918C4A32BB99DA6001F018E /* TrackerCollectionViewHeader.swift in Sources */,
 				09AB3A212BBC8FC6009ACB66 /* CreateTrackerViewControllerDelegate.swift in Sources */,
 				0918C4A52BB9A8C4001F018E /* TrackerCellDelegate.swift in Sources */,
-				097D0CE62BBB25E800385F44 /* UnregularActionViewController.swift in Sources */,
 				09E1470D2B9CDB0A00183756 /* TrackerViewController.swift in Sources */,
 				098A833A2B9DEAF30037964B /* TrackerRecord.swift in Sources */,
 				098A83362B9DE89D0037964B /* Tracker.swift in Sources */,
+				09E80C9C2BBF1F360043661C /* TypeView.swift in Sources */,
 				091628082BBDC4EB0020683A /* SheduleViewControllerDelegate.swift in Sources */,
 				0918C4A12BB98D9E001F018E /* TrackerCollectionViewCell.swift in Sources */,
 				097D0CE42BBB196400385F44 /* CreateTrackerViewController.swift in Sources */,
 				09E147092B9CDB0A00183756 /* AppDelegate.swift in Sources */,
 				091628062BBDC4A50020683A /* SheduleViewController.swift in Sources */,
 				09E1470B2B9CDB0A00183756 /* SceneDelegate.swift in Sources */,
+				09E80C9E2BBF1FE70043661C /* ActionViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

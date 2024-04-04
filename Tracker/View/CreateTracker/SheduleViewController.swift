@@ -10,55 +10,51 @@ import UIKit
 final class SheduleViewController: UIViewController {
     
     weak var delegate: SheduleViewControllerDelegate?
-    private let headerLabel = UILabel()
-    private let weekdayTableView = UITableView(frame: .zero)
-    private let setSheduleButton = UIButton()
+    private let headerLabel: UILabel = {
+        let view = UILabel()
+        view.text = "Расписание"
+        view.textColor = .ypBlack
+        view.textAlignment = .center
+        view.font = .systemFont(ofSize: 16, weight: .medium)
+        return view
+    }()
+    
+    private let weekdayTableView: UITableView = {
+        let view = UITableView(frame: .zero)
+        view.backgroundColor = .ypBackground
+        view.layer.masksToBounds = true
+        view.layer.cornerRadius = 16
+        view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        view.register(WeekdayCell.self, forCellReuseIdentifier: WeekdayCell.identifer)
+        view.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        return view
+    }()
+    
+    private let setSheduleButton: UIButton = {
+        let view = UIButton()
+        view.setTitle("Готово", for: .normal)
+        view.setTitleColor(.ypWhite, for: .normal)
+        view.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        view.backgroundColor = .ypBlack
+        view.layer.cornerRadius = 16
+        view.layer.masksToBounds = true
+        return view
+    }()
+    
     private var selectedWeekdays: [Weekday] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .ypWhite
         
-        initHeaderLabel()
-        initWeekdayTableView()
-        inintSetSheduleButton()
+        weekdayTableView.delegate = self
+        weekdayTableView.dataSource = self
+        
+        setSheduleButton.addTarget(self, action: #selector(setShedule), for: .touchUpInside)
         
         setupConstraints()
     }
     
-    private func initHeaderLabel() {
-        headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.text = "Расписание"
-        headerLabel.textColor = .ypBlack
-        headerLabel.textAlignment = .center
-        headerLabel.font = .systemFont(ofSize: 16, weight: .medium)
-        view.addSubview(headerLabel)
-    }
-    
-    private func initWeekdayTableView() {
-        weekdayTableView.translatesAutoresizingMaskIntoConstraints = false
-        weekdayTableView.delegate = self
-        weekdayTableView.dataSource = self
-        weekdayTableView.backgroundColor = .ypBackground
-        weekdayTableView.layer.masksToBounds = true
-        weekdayTableView.layer.cornerRadius = 16
-        weekdayTableView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-        weekdayTableView.register(WeekdayCell.self, forCellReuseIdentifier: WeekdayCell.identifer)
-        weekdayTableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-        view.addSubview(weekdayTableView)
-    }
-    
-    private func inintSetSheduleButton() {
-        setSheduleButton.translatesAutoresizingMaskIntoConstraints = false
-        setSheduleButton.setTitle("Готово", for: .normal)
-        setSheduleButton.setTitleColor(.ypWhite, for: .normal)
-        setSheduleButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        setSheduleButton.backgroundColor = .ypBlack
-        setSheduleButton.layer.cornerRadius = 16
-        setSheduleButton.layer.masksToBounds = true
-        setSheduleButton.addTarget(self, action: #selector(setShedule), for: .touchUpInside)
-        view.addSubview(setSheduleButton)
-    }
     
     @objc
     private func setShedule() {
@@ -67,6 +63,11 @@ final class SheduleViewController: UIViewController {
     }
     
     private func setupConstraints() {
+        [setSheduleButton, weekdayTableView, headerLabel].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
+        
         NSLayoutConstraint.activate([
             headerLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30),
             headerLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),

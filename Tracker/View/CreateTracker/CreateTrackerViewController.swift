@@ -10,70 +10,74 @@ import UIKit
 final class CreateTrackerViewController: UIViewController {
     
     weak var delegate: CreateTrackerViewControllerDelegate?
-    private let headerLabel = UILabel()
-    private let regularActionButton = UIButton()
-    private let unregularActionButton = UIButton()
-    private let stackButtonsView = UIStackView()
+    private let headerLabel: UILabel = {
+        let view = UILabel()
+        view.text = "Создание трекера"
+        view.textColor = .ypBlack
+        view.textAlignment = .center
+        view.font = .systemFont(ofSize: 16, weight: .medium)
+        return view
+    }()
+    
+    private let regularActionButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Привычка", for: .normal)
+        button.backgroundColor = .ypBlack
+        button.setTitleColor(.ypWhite, for: .normal)
+        button.layer.masksToBounds = true
+        button.layer.cornerRadius = 16
+        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        return button
+    }()
+    
+    private let unregularActionButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Нерегулярные событие", for: .normal)
+        button.backgroundColor = .ypBlack
+        button.setTitleColor(.ypWhite, for: .normal)
+        button.layer.masksToBounds = true
+        button.layer.cornerRadius = 16
+        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        return button
+    }()
+    
+    private let stackButtonsView: UIStackView = {
+        let view = UIStackView()
+        view.axis = .vertical
+        view.spacing = 16
+        view.distribution = .fillEqually
+        return view
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .ypWhite
         
-        initHeaderLabel()
-        initStackButtonView()
-        initRegularActionButton()
-        initUnregularActionButton()
+        regularActionButton.addTarget(self, action: #selector(addRegularAction), for: .touchUpInside)
+        unregularActionButton.addTarget(self, action: #selector(addUnregularAction), for: .touchUpInside)
+        
         setupConstraints()
     }
     
-    private func initHeaderLabel() {
-        headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.text = "Создание трекера"
-        headerLabel.textColor = .ypBlack
-        headerLabel.textAlignment = .center
-        headerLabel.font = .systemFont(ofSize: 16, weight: .medium)
-        view.addSubview(headerLabel)
-    }
-    
-    private func initStackButtonView() {
-        stackButtonsView.axis = .vertical
-        stackButtonsView.spacing = 16
-        stackButtonsView.distribution = .fillEqually
-        stackButtonsView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(stackButtonsView)
-    }
-    
-    private func initRegularActionButton() {
-        regularActionButton.translatesAutoresizingMaskIntoConstraints = false
-        regularActionButton.setTitle("Привычка", for: .normal)
-        regularActionButton.backgroundColor = .ypBlack
-        regularActionButton.setTitleColor(.ypWhite, for: .normal)
-        regularActionButton.layer.masksToBounds = true
-        regularActionButton.layer.cornerRadius = 16
-        regularActionButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        regularActionButton.addTarget(self, action: #selector(addRegularAction), for: .touchUpInside)
-        stackButtonsView.addArrangedSubview(regularActionButton)
-    }
-    
-    private func initUnregularActionButton() {
-        unregularActionButton.translatesAutoresizingMaskIntoConstraints = false
-        unregularActionButton.setTitle("Нерегулярные событие", for: .normal)
-        unregularActionButton.backgroundColor = .ypBlack
-        unregularActionButton.setTitleColor(.ypWhite, for: .normal)
-        unregularActionButton.layer.masksToBounds = true
-        unregularActionButton.layer.cornerRadius = 16
-        unregularActionButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        unregularActionButton.addTarget(self, action: #selector(addUnregularAction), for: .touchUpInside)
-        stackButtonsView.addArrangedSubview(unregularActionButton)
-    }
-    
     private func setupConstraints() {
+        [headerLabel, stackButtonsView].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
+        
+        [regularActionButton, unregularActionButton].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            stackButtonsView.addArrangedSubview($0)
+        }
+        
         NSLayoutConstraint.activate([
             headerLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30),
             headerLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            
             stackButtonsView.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor),
             stackButtonsView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             stackButtonsView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            
             regularActionButton.heightAnchor.constraint(equalToConstant: 60),
             unregularActionButton.heightAnchor.constraint(equalToConstant: 60)
         ])
@@ -81,14 +85,14 @@ final class CreateTrackerViewController: UIViewController {
     
     @objc
     private func addRegularAction() {
-        let viewController = RegularActionViewController()
+        let viewController = ActionViewController(setting: SettingActionView(header: "Новая привычка", tableCount: 2, type: TypeView.regular))
         viewController.delegate = self
         present(viewController, animated: true)
     }
     
     @objc
     private func addUnregularAction() {
-        let viewController = UnregularActionViewController()
+        let viewController = ActionViewController(setting: SettingActionView(header: "Новое нерегулярное событие", tableCount: 1, type: TypeView.unregular))
         viewController.delegate = self
         present(viewController, animated: true)
     }

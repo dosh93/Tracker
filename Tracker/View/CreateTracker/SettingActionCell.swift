@@ -10,11 +10,18 @@ import UIKit
 final class SettingActionCell: UITableViewCell {
     static let identifer = "cell"
     
-    private let chevronUiImage = UIImageView()
+    private let chevronUiImage: UIImageView = {
+        let view = UIImageView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.image = UIImage(named: "Chevron")
+        return view
+    }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
-        initChevronUiImage()
+        
+        contentView.addSubview(chevronUiImage)
+        
         initDetailLabel()
         setupConstraints()
     }
@@ -22,12 +29,6 @@ final class SettingActionCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    private func initChevronUiImage() {
-        chevronUiImage.translatesAutoresizingMaskIntoConstraints = false
-        chevronUiImage.image = UIImage(named: "Chevron")
-        contentView.addSubview(chevronUiImage)
     }
     
     private func initDetailLabel() {

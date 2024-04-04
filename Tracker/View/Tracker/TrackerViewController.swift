@@ -64,9 +64,9 @@ final class TrackerViewController: UIViewController {
                     schedule: [.mon], isRegular: true),
             ])
     ]
-    var completedTrackers: [TrackerRecord] = []
-    var visibleTrackers: [TrackerCategory] = []
-    var currentDate = Date()
+    private var completedTrackers: [TrackerRecord] = []
+    private var visibleTrackers: [TrackerCategory] = []
+    private var currentDate = Date()
     
     private let datePicker: UIDatePicker = {
         let view = UIDatePicker()

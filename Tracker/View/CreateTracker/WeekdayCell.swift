@@ -10,7 +10,7 @@ import UIKit
 final class WeekdayCell: UITableViewCell {
     static let identifer = "cell"
     
-    let selecteSwith = UISwitch()
+    private let selecteSwith = UISwitch()
     var switchChanged: ((Bool, Weekday) -> Void)?
     var representedDay: Weekday?
     

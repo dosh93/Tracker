@@ -106,24 +106,36 @@ final class TrackerViewController: UIViewController {
     }()
     
     private let trackersCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+    private let trackerStore = TrackerStore()
+    private let trackerCategoryStore = TrackerCategoryStore()
+    private let trackerRecordStore = TrackerRecordStore()
+    
     
     override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .ypWhite
-        
-        trackersCollectionView.delegate = self
-        trackersCollectionView.dataSource = self
-        searchTextFiled.delegate = self
-        datePicker.addTarget(self, action: #selector(datePickerValueChanged), for: .valueChanged)
-        
-        initNavbar()
-        setVisibleTrackersByDate()
-        registerTrackersCollection()
-        
-        showPlaceholderIfNeeded()
-        setupConstraints()
-        
-        setTapGesture()
+        do {
+            super.viewDidLoad()
+            view.backgroundColor = .ypWhite
+            trackersCollectionView.delegate = self
+            trackersCollectionView.dataSource = self
+            searchTextFiled.delegate = self
+            datePicker.addTarget(self, action: #selector(datePickerValueChanged), for: .valueChanged)
+            
+            try trackerCategoryStore.createCategory(name: "Регулярно важно")
+            try trackerCategoryStore.createCategory(name: "Важно")
+            categories = try trackerCategoryStore.fetchTrackerCategories()
+            completedTrackers = try trackerRecordStore.fetchTrackerRecords()
+            
+            initNavbar()
+            setVisibleTrackersByDate()
+            registerTrackersCollection()
+            
+            showPlaceholderIfNeeded()
+            setupConstraints()
+            
+            setTapGesture()
+        } catch {
+            assertionFailure("Fail")
+        }
     }
     
     private func setTapGesture() {
@@ -240,9 +252,9 @@ final class TrackerViewController: UIViewController {
             return tracker.schedule.contains(weekday)
         } else {
             let isCompletedToday = completedTrackers.contains { record in
-                record.id == tracker.id && isEqualDate(date1: record.date, date2: currentDate)
+                record.trackerId == tracker.id && isEqualDate(date1: record.date, date2: currentDate)
             }
-            let isNotCompleted = !completedTrackers.contains { $0.id == tracker.id }
+            let isNotCompleted = !completedTrackers.contains { $0.trackerId == tracker.id }
             return isCompletedToday || isNotCompleted
         }
     }
@@ -292,8 +304,8 @@ extension TrackerViewController: UICollectionViewDataSource {
         cell.delegate = self
         
         let tracker = visibleTrackers[indexPath.section].trackers[indexPath.row]
-        let countCompleted = completedTrackers.filter{ $0.id == tracker.id }.count
-        let isCompleted = completedTrackers.contains(where: { $0.id == tracker.id && isEqualDate(date1: $0.date, date2: currentDate)})
+        let countCompleted = completedTrackers.filter{ $0.trackerId == tracker.id }.count
+        let isCompleted = completedTrackers.contains(where: { $0.trackerId == tracker.id && isEqualDate(date1: $0.date, date2: currentDate)})
         let isEnabled = isDate(currentDate, lessThan: Date()) || isEqualDate(date1: currentDate, date2: Date())
         cell.id = tracker.id
         cell.indexPath = indexPath
@@ -317,14 +329,21 @@ extension TrackerViewController: UICollectionViewDataSource {
 
 extension TrackerViewController: TrackerCellDelegate {
     func trackerCompleted(for id: UUID, at indexPath: IndexPath) {
-        if let index = completedTrackers.firstIndex(where: { tracker in
-            tracker.id == id && isEqualDate(date1: tracker.date, date2: datePicker.date)
-        }) {
-            completedTrackers.remove(at: index)
-        } else {
-            completedTrackers.append(TrackerRecord(id: id, date: datePicker.date))
+        do {
+            if let index = completedTrackers.firstIndex(where: { tracker in
+                tracker.trackerId == id && isEqualDate(date1: tracker.date, date2: datePicker.date)
+            }) {
+                try trackerRecordStore.deleteTrackerRecord(by: completedTrackers[index])
+                completedTrackers.remove(at: index)
+            } else {
+                let trackerRecord = TrackerRecord(trackerId: id, date: datePicker.date)
+                try trackerRecordStore.saveTrackerRecord(record: trackerRecord)
+                completedTrackers.append(trackerRecord)
+            }
+            trackersCollectionView.reloadItems(at: [indexPath])
+        } catch {
+            assertionFailure("fail")
         }
-        trackersCollectionView.reloadItems(at: [indexPath])
     }
     
     private func isEqualDate(date1: Date, date2: Date) -> Bool {
@@ -386,6 +405,11 @@ extension TrackerViewController: CreateTrackerViewControllerDelegate {
             newCategories.append(TrackerCategory(title: category, trackers: [tracker]))
         }
         categories = newCategories
+        do {
+            try trackerStore.saveTracker(tracker: tracker, fromCategory: category)
+        } catch {
+            assertionFailure("Fail")
+        }
         setVisibleTrackersByDate()
         trackersCollectionView.reloadData()
     }

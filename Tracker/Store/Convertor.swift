@@ -10,13 +10,15 @@ import UIKit
 
 final class Convertor {
     
-    func scheduleFromCoreData(schedule: String) throws -> [Weekday] {
-        let scheduleList = schedule.components(separatedBy: ",")
+    func scheduleFromCoreData(schedule: String?) -> [Weekday] {
+        guard let sheduleStr = schedule else { return [] }
+        let scheduleList = sheduleStr.components(separatedBy: ",")
         var weekdays: [Weekday] = []
 
         for item in scheduleList {
             guard let weekday = Weekday(rawValue: item.trimmingCharacters(in: .whitespaces)) else {
-                throw ConvertorError.convertWeekdayFromCoreDataError
+                print("scheduleFromCoreData error")
+                return [Weekday.mon]
             }
             weekdays.append(weekday)
         }

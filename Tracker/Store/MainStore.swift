@@ -12,10 +12,10 @@ class MainStore {
     internal let context: NSManagedObjectContext
     
     init() {
-        self.context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            fatalError("Not found AppDelegate")
+        }
+        context = appDelegate.persistentContainer.viewContext
     }
-    
-   
-    
     
 }

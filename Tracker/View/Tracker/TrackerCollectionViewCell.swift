@@ -136,7 +136,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    func update(emoji: String, name: String, color: UIColor, countCompleted: Int, isCompleted: Bool, isEnabled: Bool) {
+    func update(emoji: String?, name: String?, color: UIColor?, countCompleted: Int, isCompleted: Bool, isEnabled: Bool) {
         emojiLabel.text = emoji
         nameLabel.text = name
         trackerView.backgroundColor = color

@@ -9,13 +9,13 @@ import CoreData
 import UIKit
 
 class MainStore {
-    internal let context: NSManagedObjectContext
-    
-    init() {
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-            fatalError("Not found AppDelegate")
-        }
-        context = appDelegate.persistentContainer.viewContext
-    }
-    
+    static var persistentContainer: NSPersistentContainer = {
+        let container = NSPersistentContainer(name: "Tacker")
+        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+            if let error = error as NSError? {
+                
+            }
+        })
+        return container
+    }()
 }

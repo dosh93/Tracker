@@ -11,10 +11,7 @@ import UIKit
 final class TrackerStore: NSObject {
     
     private var context: NSManagedObjectContext {
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-            fatalError("Not found AppDelegate")
-        }
-        return appDelegate.persistentContainer.viewContext
+        return MainStore.persistentContainer.viewContext
     }
     
     private weak var delegate: StoreDelegate?
@@ -38,6 +35,14 @@ final class TrackerStore: NSObject {
         
         return controller
     }()
+    
+    var isEmpty: Bool {
+        fetchedResultsController.sections?.isEmpty ?? true
+    }
+    
+    var numberOfSections: Int {
+        return fetchedResultsController.sections?.count ?? 0
+    }
     
     private let trackerCategoryStore = TrackerCategoryStore()
     private let convertor = Convertor()
@@ -125,14 +130,6 @@ final class TrackerStore: NSObject {
         } catch {
             print(error.localizedDescription)
         }
-    }
-    
-    var isEmpty: Bool {
-        fetchedResultsController.sections?.isEmpty ?? true
-    }
-    
-    var numberOfSections: Int {
-        return fetchedResultsController.sections?.count ?? 0
     }
     
     func numberOfRowsInSection(_ section: Int) -> Int {

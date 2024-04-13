@@ -258,13 +258,13 @@ extension ActionViewController: UITextFieldDelegate {
 
 extension ActionViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if  indexPath.item == 0 {
-            tableView.deselectRow(at: indexPath, animated: true)
-        } else {
+        //if  indexPath.item == 0 {
+        //    tableView.deselectRow(at: indexPath, animated: true)
+        //} else {
             let viewController = SheduleViewController()
             viewController.delegate = self
             present(viewController, animated: true)
-        }
+        //}
     }
 }
 
@@ -278,11 +278,11 @@ extension ActionViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: SettingActionCell.identifer, for: indexPath) as? SettingActionCell else {
             return UITableViewCell()
         }
-        if indexPath.item == 0 {
-            cell.textLabel?.text = "Категория"
-            cell.detailTextLabel?.text = currentCategory
-            cell.selectionStyle = .none
-        } else {
+        //if indexPath.item == 0 {
+        //    cell.textLabel?.text = "Категория"
+        //    cell.detailTextLabel?.text = currentCategory
+        //    cell.selectionStyle = .none
+        //} else {
             cell.textLabel?.text = "Расписание"
             let shorName = currentShedule.map { $0.getShortDayName }
             if shorName.count == 7 {
@@ -292,7 +292,7 @@ extension ActionViewController: UITableViewDataSource {
             } else {
                 cell.detailTextLabel?.text = nil
             }
-        }
+        //}
         
         cell.backgroundColor = .ypBackground
         return cell

@@ -11,10 +11,7 @@ import UIKit
 final class TrackerRecordStore: NSObject {
     
     private var context: NSManagedObjectContext {
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-            fatalError("Not found AppDelegate")
-        }
-        return appDelegate.persistentContainer.viewContext
+        return MainStore.persistentContainer.viewContext
     }
     
     private weak var delegate: StoreDelegate?

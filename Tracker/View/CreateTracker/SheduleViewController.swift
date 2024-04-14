@@ -101,6 +101,7 @@ extension SheduleViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         let day = Weekday.allCases[indexPath.row]
+        cell.selectionStyle = .none
         cell.switchChanged = { [weak self] (isOn, day) in
             if isOn {
                 self?.selectedWeekdays.append(day)

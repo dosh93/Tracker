@@ -11,6 +11,21 @@ final class ActionViewController: UIViewController {
     
     weak var delegate: CreateTrackerViewControllerDelegate?
     
+    
+    private let scrollView: UIScrollView = {
+        let view = UIScrollView()
+        view.backgroundColor = .ypWhite
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private let stackView: UIStackView = {
+        let view = UIStackView()
+        view.axis = .vertical
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     private let headerLabel: UILabel = {
         let view = UILabel()
         view.textColor = .ypBlack
@@ -53,6 +68,14 @@ final class ActionViewController: UIViewController {
         return view
     }()
     
+    private let emojiAndColorCollictionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        return view
+    }()
+    
+    private let emojiAndColorCollictionManager = EmojiAndColorCollectionView()
+    
     private let stackButtonsView: UIStackView = {
         let view = UIStackView()
         view.axis = .horizontal
@@ -88,6 +111,8 @@ final class ActionViewController: UIViewController {
     
     private var currentCategory = "Регулярно важно"
     private var currentShedule: [Weekday] = []
+    private var emoji: String = ""
+    private var color: UIColor? = nil
     
     private let setting: SettingActionView
     
@@ -115,6 +140,8 @@ final class ActionViewController: UIViewController {
         categoryAndSheduleTableView.dataSource = self
         nameTextField.delegate = self
         
+        registerEmojiCollection()
+        
         createActionButton.addTarget(self, action: #selector(createAction), for: .touchUpInside)
         cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
         
@@ -133,10 +160,27 @@ final class ActionViewController: UIViewController {
         view.endEditing(true)
     }
     
+    private func registerEmojiCollection() {
+        emojiAndColorCollictionManager.delegate = self
+        emojiAndColorCollictionView.delegate = emojiAndColorCollictionManager
+        emojiAndColorCollictionView.dataSource = emojiAndColorCollictionManager
+        
+        emojiAndColorCollictionView.register(EmojiCollectionViewCell.self, forCellWithReuseIdentifier: EmojiCollectionViewCell.identifier)
+        emojiAndColorCollictionView.register(ColorCollectionViewCell.self, forCellWithReuseIdentifier: ColorCollectionViewCell.identifier)
+        emojiAndColorCollictionView.register(EmojiAndColorCollectionViewHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: EmojiAndColorCollectionViewHeader.identifier)
+
+    }
+    
     private func setupConstraints() {
-        [headerLabel, nameTextField, errorLabel, stackButtonsView, categoryAndSheduleTableView].forEach {
+        view.addSubview(scrollView)
+        scrollView.addSubview(stackView)
+        
+        stackView.isLayoutMarginsRelativeArrangement = true
+        stackView.layoutMargins = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        
+        [headerLabel, nameTextField, errorLabel, categoryAndSheduleTableView, emojiAndColorCollictionView, stackButtonsView].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview($0)
+            stackView.addArrangedSubview($0)
         }
         
         [cancelButton, createActionButton].forEach {
@@ -144,29 +188,30 @@ final class ActionViewController: UIViewController {
             stackButtonsView.addArrangedSubview($0)
         }
         
+        stackView.setCustomSpacing(14, after: headerLabel)
+        stackView.setCustomSpacing(24, after: nameTextField)
+        stackView.setCustomSpacing(34, after: categoryAndSheduleTableView)
+        stackView.setCustomSpacing(24, after: emojiAndColorCollictionView)
+        
         
         NSLayoutConstraint.activate([
-            headerLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30),
-            headerLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
-            nameTextField.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 30),
-            nameTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            nameTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            nameTextField.heightAnchor.constraint(equalToConstant: 63),
+            stackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
             
-            errorLabel.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 8),
-            errorLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-            
-            categoryAndSheduleTableView.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 24),
-            categoryAndSheduleTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            categoryAndSheduleTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            stackButtonsView.heightAnchor.constraint(equalToConstant: 60),
             categoryAndSheduleTableView.heightAnchor.constraint(equalToConstant: CGFloat(75 * setting.tableCount)),
             
-            stackButtonsView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            stackButtonsView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
-            stackButtonsView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-            cancelButton.heightAnchor.constraint(equalToConstant: 60),
-            createActionButton.heightAnchor.constraint(equalToConstant: 60)
+            headerLabel.heightAnchor.constraint(equalToConstant: 70),
+            nameTextField.heightAnchor.constraint(equalToConstant: 75),
+            emojiAndColorCollictionView.heightAnchor.constraint(equalToConstant: 444)
         ])
     }
     
@@ -178,7 +223,7 @@ final class ActionViewController: UIViewController {
     @objc
     private func createAction() {
         let nameText = nameTextField.text ?? ""
-        let tracker = Tracker(id: UUID.init(), name: nameText, color: .ypColor1, emoji: "🏃", schedule: currentShedule, isRegular: setting.type == TypeView.regular)
+        let tracker = Tracker(id: UUID.init(), name: nameText, color: color ?? .ypColor1, emoji: emoji, schedule: currentShedule, isRegular: setting.type == TypeView.regular)
         delegate?.createTracker(tracker, currentCategory)
     }
     
@@ -187,7 +232,7 @@ final class ActionViewController: UIViewController {
         
         errorLabel.isHidden = nameText.count <= 38
         
-        let isFormValid = !nameText.isEmpty && nameText.count <= 38 && !currentCategory.isEmpty && !currentShedule.isEmpty
+        let isFormValid = !nameText.isEmpty && nameText.count <= 38 && !currentCategory.isEmpty && !currentShedule.isEmpty && !emoji.isEmpty && color != nil
         
         disabledCreateButton(isDisabled: !isFormValid)
     }
@@ -213,13 +258,13 @@ extension ActionViewController: UITextFieldDelegate {
 
 extension ActionViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if  indexPath.item == 0 {
-            tableView.deselectRow(at: indexPath, animated: true)
-        } else {
+        //if  indexPath.item == 0 {
+        //    tableView.deselectRow(at: indexPath, animated: true)
+        //} else {
             let viewController = SheduleViewController()
             viewController.delegate = self
             present(viewController, animated: true)
-        }
+        //}
     }
 }
 
@@ -233,10 +278,11 @@ extension ActionViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: SettingActionCell.identifer, for: indexPath) as? SettingActionCell else {
             return UITableViewCell()
         }
-        if indexPath.item == 0 {
-            cell.textLabel?.text = "Категория"
-            cell.detailTextLabel?.text = currentCategory
-        } else {
+        //if indexPath.item == 0 {
+        //    cell.textLabel?.text = "Категория"
+        //    cell.detailTextLabel?.text = currentCategory
+        //    cell.selectionStyle = .none
+        //} else {
             cell.textLabel?.text = "Расписание"
             let shorName = currentShedule.map { $0.getShortDayName }
             if shorName.count == 7 {
@@ -246,7 +292,7 @@ extension ActionViewController: UITableViewDataSource {
             } else {
                 cell.detailTextLabel?.text = nil
             }
-        }
+        //}
         
         cell.backgroundColor = .ypBackground
         return cell
@@ -258,5 +304,17 @@ extension ActionViewController: SheduleViewControllerDelegate {
         currentShedule = shedule
         checkRequiredField()
         categoryAndSheduleTableView.reloadData()
+    }
+}
+
+extension ActionViewController: EmojiAndColorCollectionViewDelegate {
+    func selectColor(_ color: UIColor) {
+        self.color = color
+        checkRequiredField()
+    }
+    
+    func selectEmoji(_ emoji: String) {
+        self.emoji = emoji
+        checkRequiredField()
     }
 }

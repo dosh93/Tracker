@@ -109,7 +109,7 @@ final class ActionViewController: UIViewController {
         return view
     }()
     
-    private var currentCategory = "Регулярно важно"
+    private var currentCategory = ""
     private var currentShedule: [Weekday] = []
     private var emoji: String = ""
     private var color: UIColor? = nil
@@ -122,7 +122,6 @@ final class ActionViewController: UIViewController {
         
         if setting.type == TypeView.unregular {
             currentShedule = Weekday.allCases
-            currentCategory = "Важно"
         }
         
         super.init(nibName: nil, bundle: nil)
@@ -258,13 +257,19 @@ extension ActionViewController: UITextFieldDelegate {
 
 extension ActionViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //if  indexPath.item == 0 {
-        //    tableView.deselectRow(at: indexPath, animated: true)
-        //} else {
+        if indexPath.item == 0 {
+            tableView.deselectRow(at: indexPath, animated: true)
+            let viewController = CategoryViewController()
+            viewController.category = currentCategory
+            let viewModel = CategoryViewModel(model: TrackerCategoryStore())
+            viewController.initialize(viewModel: viewModel)
+            viewController.presentationController?.delegate = self
+            present(viewController, animated: true)
+        } else {
             let viewController = SheduleViewController()
             viewController.delegate = self
             present(viewController, animated: true)
-        //}
+        }
     }
 }
 
@@ -278,11 +283,11 @@ extension ActionViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: SettingActionCell.identifer, for: indexPath) as? SettingActionCell else {
             return UITableViewCell()
         }
-        //if indexPath.item == 0 {
-        //    cell.textLabel?.text = "Категория"
-        //    cell.detailTextLabel?.text = currentCategory
-        //    cell.selectionStyle = .none
-        //} else {
+        if indexPath.item == 0 {
+            cell.textLabel?.text = "Категория"
+            cell.detailTextLabel?.text = currentCategory
+            cell.selectionStyle = .none
+        } else {
             cell.textLabel?.text = "Расписание"
             let shorName = currentShedule.map { $0.getShortDayName }
             if shorName.count == 7 {
@@ -292,7 +297,7 @@ extension ActionViewController: UITableViewDataSource {
             } else {
                 cell.detailTextLabel?.text = nil
             }
-        //}
+        }
         
         cell.backgroundColor = .ypBackground
         return cell
@@ -316,5 +321,14 @@ extension ActionViewController: EmojiAndColorCollectionViewDelegate {
     func selectEmoji(_ emoji: String) {
         self.emoji = emoji
         checkRequiredField()
+    }
+}
+
+extension ActionViewController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        if let viewController = presentationController.presentedViewController as? CategoryViewController {
+            currentCategory =  viewController.category
+            categoryAndSheduleTableView.reloadData()
+        }
     }
 }

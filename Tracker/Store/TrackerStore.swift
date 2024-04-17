@@ -92,6 +92,7 @@ final class TrackerStore: NSObject {
             trackerCD.isRegular = tracker.isRegular
             trackerCD.category = categoryCD
             trackerCD.schedule = convertor.scheduleToCoreData(schedule: tracker.schedule)
+            try context.save()
         } catch TrackerError.fetchTrackerError {
             throw TrackerError.fetchTrackerError
         } catch {

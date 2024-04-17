@@ -11,7 +11,7 @@ import UIKit
 final class TrackerCategoryStore: NSObject {
     
     private let convertor = Convertor()
-    private weak var delegate: StoreDelegate?
+    weak var delegate: StoreDelegate?
     
     private var context: NSManagedObjectContext {
         return MainStore.persistentContainer.viewContext
@@ -41,9 +41,8 @@ final class TrackerCategoryStore: NSObject {
         return controller
     }()
     
-    init(delegate: StoreDelegate? = nil) {
-        self.delegate = delegate
-
+    var countCategory: Int? {
+        return fetchResultsController.sections?[0].numberOfObjects
     }
     
     func createCategory(name: String) throws -> TrackerCategoryCoreData {
@@ -73,6 +72,11 @@ final class TrackerCategoryStore: NSObject {
         } catch {
             throw error
         }
+    }
+    
+    func object(at indexPath: IndexPath) -> String {
+        let categoryCD = fetchResultsController.object(at: indexPath)
+        return categoryCD.name ?? ""
     }
     
     func fetchTrackerCategories() throws -> [TrackerCategory] {

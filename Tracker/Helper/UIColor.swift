@@ -22,6 +22,10 @@ extension UIColor {
         return String(format:"#%06x", rgb)
     }
     
+    func toLight() -> UIColor {
+        self.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light))
+    }
+    
     convenience init?(hexString: String) {
         let r, g, b, a: CGFloat
         

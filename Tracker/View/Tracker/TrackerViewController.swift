@@ -48,40 +48,31 @@ final class TrackerViewController: UIViewController {
     
     private let trackersCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     private lazy var trackerStore = TrackerStore(delegate: self)
-    private lazy var trackerCategoryStore = TrackerCategoryStore(delegate: self)
     private lazy var trackerRecordStore = TrackerRecordStore(delegate: self)
-    
     private var currentSearchText: String = ""
     private var currentWeekDay: Weekday = Weekday.mon
     private var currentDate = Date().normalized
     
     override func viewDidLoad() {
-        do {
-            super.viewDidLoad()
-            
-            currentWeekDay = getWeekday(currentDate: Date())
-            
-            view.backgroundColor = .ypWhite
-            trackersCollectionView.delegate = self
-            trackersCollectionView.dataSource = self
-            searchTextFiled.delegate = self
-            datePicker.addTarget(self, action: #selector(datePickerValueChanged), for: .valueChanged)
-
-            try trackerCategoryStore.createCategory(name: "Регулярно важно")
-            try trackerCategoryStore.createCategory(name: "Важно")
-            
-            filter()
-            initNavbar()
-            setVisibleTrackersByDate()
-            registerTrackersCollection()
-            
-            showPlaceholderIfNeeded()
-            setupConstraints()
-            
-            setTapGesture()
-        } catch {
-            assertionFailure("Fail viewDidLoad")
-        }
+        super.viewDidLoad()
+        
+        currentWeekDay = getWeekday(currentDate: Date())
+        
+        view.backgroundColor = .ypWhite
+        trackersCollectionView.delegate = self
+        trackersCollectionView.dataSource = self
+        searchTextFiled.delegate = self
+        datePicker.addTarget(self, action: #selector(datePickerValueChanged), for: .valueChanged)
+        
+        filter()
+        initNavbar()
+        setVisibleTrackersByDate()
+        registerTrackersCollection()
+        
+        showPlaceholderIfNeeded()
+        setupConstraints()
+        
+        setTapGesture()
     }
     
     private func setTapGesture() {

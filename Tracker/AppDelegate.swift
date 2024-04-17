@@ -29,6 +29,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
 
+    func createMainAppViewController() -> UIViewController {
+        let trackerVC = TrackerViewController()
+        let statisticsVC = StatisticsController()
+
+        let trackerImage = UIImage(named: "Tracker")
+        let statisticsImage = UIImage(named: "Stats")
+
+        trackerVC.tabBarItem = UITabBarItem(title: "Трекеры", image: trackerImage, tag: 0)
+        statisticsVC.tabBarItem = UITabBarItem(title: "Статистика", image: statisticsImage, tag: 1)
+
+        let trackerNavController = UINavigationController(rootViewController: trackerVC)
+        let statisticsNavController = UINavigationController(rootViewController: statisticsVC)
+
+        let tabBarController = UITabBarController()
+        tabBarController.viewControllers = [trackerNavController, statisticsNavController]
+        tabBarController.tabBar.tintColor = .ypBlue
+
+        return tabBarController
+    }
 
 }
 

@@ -36,7 +36,7 @@ final class ActionViewController: UIViewController {
     
     private let nameTextField: UITextField = {
         let view = UITextField()
-        view.placeholder = "Введите название трекера"
+        view.placeholder = NSLocalizedString("placeholder.input.nameTracker", comment: "Плейсзолдре имя трекера")
         view.backgroundColor = .ypBackground
         view.layer.cornerRadius = 16
         view.layer.masksToBounds = true
@@ -49,7 +49,7 @@ final class ActionViewController: UIViewController {
     
     private let errorLabel: UILabel = {
         let view = UILabel()
-        view.text = "Ограничение 38 символов"
+        view.text = NSLocalizedString("error.limitSymbol", comment: "Ошибка ограничения символов")
         view.font = .systemFont(ofSize: 17, weight: .regular)
         view.textColor = .ypRed
         view.textAlignment = .center
@@ -86,7 +86,7 @@ final class ActionViewController: UIViewController {
     
     private let createActionButton: UIButton = {
         let view = UIButton()
-        view.setTitle("Создать", for: .normal)
+        view.setTitle(NSLocalizedString("button.create", comment: "Кнопка создать"), for: .normal)
         view.setTitleColor(.ypWhite, for: .normal)
         view.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         view.backgroundColor = .ypGray
@@ -98,7 +98,7 @@ final class ActionViewController: UIViewController {
     
     private let cancelButton: UIButton = {
         let view = UIButton()
-        view.setTitle("Отменить", for: .normal)
+        view.setTitle(NSLocalizedString("button.cancel", comment: "Кнопка создать"), for: .normal)
         view.setTitleColor(.ypRed, for: .normal)
         view.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         view.backgroundColor = .ypWhite
@@ -284,14 +284,14 @@ extension ActionViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         if indexPath.item == 0 {
-            cell.textLabel?.text = "Категория"
+            cell.textLabel?.text = NSLocalizedString("header.category", comment: "Заголовок категории")
             cell.detailTextLabel?.text = currentCategory
             cell.selectionStyle = .none
         } else {
-            cell.textLabel?.text = "Расписание"
+            cell.textLabel?.text = NSLocalizedString("header.schedule", comment: "Заголовок расписания")
             let shorName = currentShedule.map { $0.getShortDayName }
             if shorName.count == 7 {
-                cell.detailTextLabel?.text = "Каждый день"
+                cell.detailTextLabel?.text = NSLocalizedString("everyDay", comment: "Каждый день")
             } else if !shorName.isEmpty {
                 cell.detailTextLabel?.text = shorName.joined(separator: ", ")
             } else {

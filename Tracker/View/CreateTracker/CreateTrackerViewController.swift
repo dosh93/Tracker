@@ -12,7 +12,7 @@ final class CreateTrackerViewController: UIViewController {
     weak var delegate: CreateTrackerViewControllerDelegate?
     private let headerLabel: UILabel = {
         let view = UILabel()
-        view.text = "Создание трекера"
+        view.text = NSLocalizedString("header.createTracker", comment: "Заголовок создание трекера")
         view.textColor = .ypBlack
         view.textAlignment = .center
         view.font = .systemFont(ofSize: 16, weight: .medium)
@@ -21,7 +21,7 @@ final class CreateTrackerViewController: UIViewController {
     
     private let regularActionButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Привычка", for: .normal)
+        button.setTitle(NSLocalizedString("button.habit", comment: "Кнопка создание привычки"), for: .normal)
         button.backgroundColor = .ypBlack
         button.setTitleColor(.ypWhite, for: .normal)
         button.layer.masksToBounds = true
@@ -32,7 +32,7 @@ final class CreateTrackerViewController: UIViewController {
     
     private let unregularActionButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Нерегулярные событие", for: .normal)
+        button.setTitle(NSLocalizedString("button.irregularEvents", comment: "Кнопка создание нерегулярного собития"), for: .normal)
         button.backgroundColor = .ypBlack
         button.setTitleColor(.ypWhite, for: .normal)
         button.layer.masksToBounds = true
@@ -85,14 +85,14 @@ final class CreateTrackerViewController: UIViewController {
     
     @objc
     private func addRegularAction() {
-        let viewController = ActionViewController(setting: SettingActionView(header: "Новая привычка", tableCount: 2, type: TypeView.regular))
+        let viewController = ActionViewController(setting: SettingActionView(header: NSLocalizedString("header.habit", comment: "Заголовок создания привычки"), tableCount: 2, type: TypeView.regular))
         viewController.delegate = self
         present(viewController, animated: true)
     }
     
     @objc
     private func addUnregularAction() {
-        let viewController = ActionViewController(setting: SettingActionView(header: "Новое нерегулярное событие", tableCount: 1, type: TypeView.unregular))
+        let viewController = ActionViewController(setting: SettingActionView(header: NSLocalizedString("header.irregularEvents", comment: "Заголовок создания нерегулярного события"), tableCount: 1, type: TypeView.unregular))
         viewController.delegate = self
         present(viewController, animated: true)
     }

@@ -8,15 +8,14 @@
 import Foundation
 
 enum Weekday: String, CaseIterable {
-    
-    case mon = "Понедельник"
-    case tue = "Вторник"
-    case wed = "Среда"
-    case thu = "Четверг"
-    case fri = "Пятница"
-    case sat = "Суббота"
-    case sun = "Воскресенье"
-    
+    case mon, tue, wed, thu, fri, sat, sun
+}
+
+extension Weekday {
+    var localizedName: String {
+        return NSLocalizedString(self.rawValue, comment: "")
+    }
+
     var getDayNumber: Int {
         switch self {
         case .mon: return 2
@@ -30,14 +29,6 @@ enum Weekday: String, CaseIterable {
     }
     
     var getShortDayName: String {
-        switch self {
-        case .mon: return "Пн"
-        case .tue: return "Вт"
-        case .wed: return "Ср"
-        case .thu: return "Чт"
-        case .fri: return "Пт"
-        case .sat: return "Сб"
-        case .sun: return "Вс"
-        }
+        return NSLocalizedString("\(self.rawValue)Short", comment: "")
     }
 }

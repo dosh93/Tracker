@@ -146,18 +146,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     }
 
     private func getCounDayStr(from count: Int) -> String {
-        let lastDigit = count % 10
-        let lastTwoDigits = count % 100
-        
-        if lastTwoDigits >= 11 && lastTwoDigits <= 14 {
-            return "\(count) дней"
-        } else if lastDigit == 1 {
-            return "\(count) день"
-        } else if lastDigit >= 2 && lastDigit <= 4 {
-            return "\(count) дня"
-        } else {
-            return "\(count) дней"
-        }
+        return String.localizedStringWithFormat(NSLocalizedString("numberOfTracker", comment: "Количество затреканный дней"), count)
     }
     
     private func setImageTrackButton(isCompleted: Bool, isEnabled: Bool) {

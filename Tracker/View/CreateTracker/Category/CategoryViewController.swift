@@ -14,7 +14,7 @@ final class CategoryViewController: UIViewController {
         label.textColor = .ypBlack
         label.textAlignment = .center
         label.font = .systemFont(ofSize: 16, weight: .medium)
-        label.text = "Категория"
+        label.text = NSLocalizedString("header.category", comment: "Заголовок категории")
         return label
     }()
     
@@ -33,7 +33,7 @@ final class CategoryViewController: UIViewController {
     
     private lazy var createCategroryButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Добавить категорию", for: .normal)
+        button.setTitle(NSLocalizedString("button.addCategory", comment: "Кнопка добавить категорию"), for: .normal)
         button.setTitleColor(.ypWhite, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = .ypBlack
@@ -45,7 +45,7 @@ final class CategoryViewController: UIViewController {
     
     private let placeholderLabel: UILabel = {
         let view = UILabel()
-        view.text = "Привычки и события можно объединить по смыслу"
+        view.text = NSLocalizedString("placeholder.category", comment: "Плейсхолдер для пустого списка категорий")
         view.textColor = .ypBlack
         view.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         view.textAlignment = .center

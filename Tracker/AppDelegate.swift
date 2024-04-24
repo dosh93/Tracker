@@ -36,8 +36,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let trackerImage = UIImage(named: "Tracker")
         let statisticsImage = UIImage(named: "Stats")
 
-        trackerVC.tabBarItem = UITabBarItem(title: "Трекеры", image: trackerImage, tag: 0)
-        statisticsVC.tabBarItem = UITabBarItem(title: "Статистика", image: statisticsImage, tag: 1)
+        trackerVC.tabBarItem = UITabBarItem(title: NSLocalizedString("label.tracker", comment: "Трекеры"), image: trackerImage, tag: 0)
+        statisticsVC.tabBarItem = UITabBarItem(title: NSLocalizedString("label.statistic", comment: "Статистика"), image: statisticsImage, tag: 1)
 
         let trackerNavController = UINavigationController(rootViewController: trackerVC)
         let statisticsNavController = UINavigationController(rootViewController: statisticsVC)

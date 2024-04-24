@@ -9,9 +9,10 @@ import UIKit
 
 final class OnboardingPageViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
     lazy var pages: [UIViewController] = {
-        let page1 = OnboardingViewController(backgrouadName: "onboarding1", labelText: "Отслеживайте только то, что хотите")
-        let page2 = OnboardingViewController(backgrouadName: "onboarding2", labelText: "Даже если это не литры воды и йога")
-        
+        let page1 = OnboardingViewController(backgrouadName: "onboarding1", labelText:  NSLocalizedString("onboarding.page1.label", comment: "Текст онбординга"))
+       
+        let page2 = OnboardingViewController(backgrouadName: "onboarding2", labelText:  NSLocalizedString("onboarding.page2.label", comment: "Текст онбординга"))
+    
         return [page1, page2]
     }()
     
@@ -29,7 +30,7 @@ final class OnboardingPageViewController: UIPageViewController, UIPageViewContro
     
     lazy var button: UIButton = {
         let button = UIButton()
-        button.setTitle("Вот это технологии!", for: .normal)
+        button.setTitle(NSLocalizedString("onboarding.button", comment: "Кнопка перехода к основному приложению"), for: .normal)
         button.layer.cornerRadius = 16
         button.backgroundColor = .ypBlack.toLight()
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)

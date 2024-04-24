@@ -26,14 +26,14 @@ final class TrackerViewController: UIViewController {
         let view = UISearchTextField()
         view.textColor = .ypBlack
         view.font = .systemFont(ofSize: 17, weight: .medium)
-        view.placeholder = "Поиск"
+        view.placeholder = NSLocalizedString("search", comment: "Поиск")
         view.backgroundColor = .clear
         return view
     }()
     
     private let placeholderLabel: UILabel = {
         let view = UILabel()
-        view.text = "Что будем отслеживать?"
+        view.text = NSLocalizedString("placeholder.trackerList", comment: "Что будем отслеживать?")
         view.textColor = .ypBlack
         view.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         view.textAlignment = .center
@@ -84,7 +84,7 @@ final class TrackerViewController: UIViewController {
     
     private func initNavbar() {
         guard let navigationBar = navigationController?.navigationBar else { return }
-        navigationBar.topItem?.title = "Трекеры"
+        navigationBar.topItem?.title = NSLocalizedString("label.tracker", comment: "Трекеры")
         navigationBar.prefersLargeTitles = true
         navigationBar.topItem?.largeTitleDisplayMode = .always
         
@@ -124,7 +124,6 @@ final class TrackerViewController: UIViewController {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd.MM.yyyy"
         let formattedDate = dateFormatter.string(from: selectedDate)
-        print("Выбранная дата: \(formattedDate)")
         currentWeekDay = getWeekday(currentDate: selectedDate)
         currentDate = selectedDate.normalized
         searchTextFiled.text = ""

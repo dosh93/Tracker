@@ -29,6 +29,7 @@
 "error.limitSymbol" = "38 character limit";
 "button.create" = "Create";
 "button.cancel" = "Cancel";
+"button.save" = "Save";
 "everyDay" = "Every day";
 "search" = "Search";
 "placeholder.trackerList" = "What will we track?";
@@ -50,3 +51,15 @@
 "friShort" = "Fri";
 "satShort" = "Sat";
 "sunShort" = "Sun";
+
+
+"editTracker" = "Edit";
+"deleteTracker" = "Delete";
+"pinTracker" = "Pin";
+"unpinTracker" = "Unpin";
+"alert.deleteTracker" = "Delete";
+"alert.cancelDelete" = "Cancel";
+"alert.messageDeleteTracker" = "Are you sure you want to delete the tracker?";
+
+"header.editTracker" = "Editing a habit";
+"category.pid" = "Pin";

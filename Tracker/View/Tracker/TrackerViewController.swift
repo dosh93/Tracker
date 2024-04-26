@@ -121,9 +121,6 @@ final class TrackerViewController: UIViewController {
     
     @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
         let selectedDate = sender.date
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.yyyy"
-        let formattedDate = dateFormatter.string(from: selectedDate)
         currentWeekDay = getWeekday(currentDate: selectedDate)
         currentDate = selectedDate.normalized
         searchTextFiled.text = ""
@@ -187,6 +184,30 @@ final class TrackerViewController: UIViewController {
     @objc private func dismissKeyboard() {
         view.endEditing(true)
     }
+    
+    func editTracker(_ indexPath: IndexPath) {
+        let tracker = trackerStore.object(at: indexPath)
+        var type = TypeView.unregular
+        var tableCount = 1
+        if (tracker?.isRegular ?? true) {
+            type = TypeView.regular
+            tableCount = 2
+        }
+        let category = trackerStore.category(at: indexPath)
+        let countCompleted = trackerRecordStore.countCompleted(at: tracker?.id ?? UUID())
+        let viewController = ActionViewController(setting: SettingActionView(header: NSLocalizedString("header.editTracker", comment: "Заголовок редактирование привычки"), tableCount: tableCount, type: type, tracker: tracker, countCompleted: countCompleted, category: category))
+        viewController.createDelegate = self
+        present(viewController, animated: true)
+    }
+    
+    func deleteTracker(_ indexPath: IndexPath) {
+        trackerStore.delete(indexPath)
+    }
+    
+    func changePinTracker(_ indexPath: IndexPath) {
+        trackerStore.changePinTracker(indexPath)
+        trackersCollectionView.reloadData()
+    }
 }
 
 extension TrackerViewController: UICollectionViewDelegateFlowLayout {
@@ -210,6 +231,61 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         trackerStore.numberOfSections
+    }
+    
+}
+
+extension TrackerViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
+        guard indexPaths.count > 0 else {
+            return nil
+        }
+        
+        let indexPath = indexPaths[0]
+        
+        var titleChangePinAction = NSLocalizedString("pinTracker", comment: "Контекстное меню закрепить трекер")
+        
+        if trackerStore.isPinned(at: indexPath) {
+            titleChangePinAction = NSLocalizedString("unpinTracker", comment: "Контекстное меню открепить трекер")
+        }
+        
+        let changePinAction = UIAction(title: titleChangePinAction) { [weak self] _ in
+            self?.changePinTracker(indexPath)
+        }
+        
+        let editAction = UIAction(title: NSLocalizedString("editTracker", comment: "Контекстное меню редактировать трекер")) { [weak self] _ in
+            self?.editTracker(indexPath)
+        }
+        
+        let deleteAction = UIAction(title: NSLocalizedString("deleteTracker", comment: "Контекстное меню удалить трекер"), attributes: .destructive) { [weak self] _ in
+            let deleteAction = UIAlertAction(title: NSLocalizedString("alert.deleteTracker", comment: ""), style: .destructive) { _ in
+                self?.deleteTracker(indexPath)
+            }
+            
+            let cancelAction = UIAlertAction(title: NSLocalizedString("alert.cancelDelete", comment: ""), style: .cancel)
+            
+            let alert = UIAlertController(title: NSLocalizedString("alert.messageDeleteTracker", comment: ""), message: nil, preferredStyle: .actionSheet)
+            alert.addAction(deleteAction)
+            alert.addAction(cancelAction)
+            self?.present(alert, animated: true)
+        }
+        
+        return UIContextMenuConfiguration(actionProvider: {
+            actions in
+            return UIMenu(children: [changePinAction, editAction, deleteAction])
+        })
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfiguration configuration: UIContextMenuConfiguration, highlightPreviewForItemAt indexPath: IndexPath) -> UITargetedPreview? {
+        guard
+            let cell = collectionView.cellForItem(at: indexPath) as? TrackerCollectionViewCell
+        else { return nil }
+
+        let parameters = UIPreviewParameters()
+        parameters.backgroundColor = .clear
+        parameters.visiblePath = UIBezierPath(roundedRect: cell.trackerView.bounds, cornerRadius: cell.trackerView.layer.cornerRadius)
+
+        return UITargetedPreview(view: cell.trackerView, parameters: parameters)
     }
 }
 
@@ -314,3 +390,4 @@ extension TrackerViewController: StoreDelegate {
         trackersCollectionView.reloadData()
     }
 }
+

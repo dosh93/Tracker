@@ -15,7 +15,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     var id: UUID?
     var indexPath: IndexPath?
     
-    private let trackerView: UIView = {
+    let trackerView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 16
         view.layer.masksToBounds = true
@@ -48,7 +48,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         return view
     }()
     
-    private let actionView: UIView = {
+    let actionView: UIView = {
         let view = UIView()
         view.backgroundColor = .ypWhite
         view.layer.cornerRadius = 16
@@ -105,7 +105,8 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         
         NSLayoutConstraint.activate([
             trackerView.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor),
-            trackerView.widthAnchor.constraint(equalToConstant: 167),
+            trackerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            trackerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             trackerView.heightAnchor.constraint(equalToConstant: 90),
             
             emojiView.topAnchor.constraint(equalTo: trackerView.topAnchor, constant: 12),
@@ -121,7 +122,8 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
             nameLabel.bottomAnchor.constraint(equalTo: trackerView.bottomAnchor, constant: -12),
             
             actionView.topAnchor.constraint(equalTo: trackerView.bottomAnchor),
-            actionView.widthAnchor.constraint(equalToConstant: 167),
+            actionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            actionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             actionView.heightAnchor.constraint(equalToConstant: 58),
             
             countDayLabel.topAnchor.constraint(equalTo: actionView.topAnchor, constant: 8),
@@ -166,4 +168,5 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         guard let indexPath = self.indexPath else { return }
         delegate?.trackerCompleted(for: id, at: indexPath)
     }
+ 
 }

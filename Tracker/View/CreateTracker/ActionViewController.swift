@@ -9,8 +9,7 @@ import UIKit
 
 final class ActionViewController: UIViewController {
     
-    weak var delegate: CreateTrackerViewControllerDelegate?
-    
+    weak var createDelegate: CreateTrackerViewControllerDelegate?
     
     private let scrollView: UIScrollView = {
         let view = UIScrollView()
@@ -32,6 +31,15 @@ final class ActionViewController: UIViewController {
         view.textAlignment = .center
         view.font = .systemFont(ofSize: 16, weight: .medium)
         return view
+    }()
+    
+    private let countDayLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .ypBlack
+        label.textAlignment = .center
+        label.font = .systemFont(ofSize: 32, weight: .bold)
+        label.isHidden = true
+        return label
     }()
     
     private let nameTextField: UITextField = {
@@ -74,7 +82,7 @@ final class ActionViewController: UIViewController {
         return view
     }()
     
-    private let emojiAndColorCollictionManager = EmojiAndColorCollectionView()
+    private var emojiAndColorCollictionManager = EmojiAndColorCollectionView(emoji: nil, color: nil)
     
     private let stackButtonsView: UIStackView = {
         let view = UIStackView()
@@ -135,6 +143,24 @@ final class ActionViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .ypWhite
         
+        if let tracker = setting.tracker {
+            emoji = tracker.emoji
+            color = tracker.color
+            currentShedule = tracker.schedule
+            nameTextField.text = tracker.name
+            emojiAndColorCollictionManager = EmojiAndColorCollectionView(emoji: emoji, color: color)
+            createActionButton.setTitle(NSLocalizedString("button.save", comment: "Кнопка сохранить"), for: .normal)
+        }
+        
+        if let category = setting.category {
+            currentCategory = category
+        }
+        
+        if let countCompleted = setting.countCompleted {
+            countDayLabel.isHidden = false
+            countDayLabel.text = String.localizedStringWithFormat(NSLocalizedString("numberOfTracker", comment: "Количество затреканный дней"), countCompleted)
+        }
+        
         categoryAndSheduleTableView.delegate = self
         categoryAndSheduleTableView.dataSource = self
         nameTextField.delegate = self
@@ -177,7 +203,7 @@ final class ActionViewController: UIViewController {
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.layoutMargins = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         
-        [headerLabel, nameTextField, errorLabel, categoryAndSheduleTableView, emojiAndColorCollictionView, stackButtonsView].forEach {
+        [headerLabel, countDayLabel, nameTextField, errorLabel, categoryAndSheduleTableView, emojiAndColorCollictionView, stackButtonsView].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             stackView.addArrangedSubview($0)
         }
@@ -188,6 +214,7 @@ final class ActionViewController: UIViewController {
         }
         
         stackView.setCustomSpacing(14, after: headerLabel)
+        stackView.setCustomSpacing(40, after: countDayLabel)
         stackView.setCustomSpacing(24, after: nameTextField)
         stackView.setCustomSpacing(34, after: categoryAndSheduleTableView)
         stackView.setCustomSpacing(24, after: emojiAndColorCollictionView)
@@ -222,8 +249,9 @@ final class ActionViewController: UIViewController {
     @objc
     private func createAction() {
         let nameText = nameTextField.text ?? ""
-        let tracker = Tracker(id: UUID.init(), name: nameText, color: color ?? .ypColor1, emoji: emoji, schedule: currentShedule, isRegular: setting.type == TypeView.regular)
-        delegate?.createTracker(tracker, currentCategory)
+        let uuid = setting.tracker?.id ?? UUID.init()
+        let tracker = Tracker(id: uuid, name: nameText, color: color ?? .ypColor1, emoji: emoji, schedule: currentShedule, isRegular: setting.type == TypeView.regular, isPinned: setting.tracker?.isPinned ?? false)
+        createDelegate?.createTracker(tracker, currentCategory)
     }
     
     private func checkRequiredField() {

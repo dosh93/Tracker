@@ -86,14 +86,14 @@ final class CreateTrackerViewController: UIViewController {
     @objc
     private func addRegularAction() {
         let viewController = ActionViewController(setting: SettingActionView(header: NSLocalizedString("header.habit", comment: "Заголовок создания привычки"), tableCount: 2, type: TypeView.regular))
-        viewController.delegate = self
+        viewController.createDelegate = self
         present(viewController, animated: true)
     }
     
     @objc
     private func addUnregularAction() {
         let viewController = ActionViewController(setting: SettingActionView(header: NSLocalizedString("header.irregularEvents", comment: "Заголовок создания нерегулярного события"), tableCount: 1, type: TypeView.unregular))
-        viewController.delegate = self
+        viewController.createDelegate = self
         present(viewController, animated: true)
     }
 }

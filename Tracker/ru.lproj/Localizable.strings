@@ -29,6 +29,7 @@
 "error.limitSymbol" = "Ограничение 38 символов";
 "button.create" = "Создать";
 "button.cancel" = "Отменить";
+"button.save" = "Сохранить";
 "everyDay" = "Каждый день";
 "search" = "Поиск";
 "placeholder.trackerList" = "Что будем отслеживать?";
@@ -51,3 +52,14 @@
 "satShort" = "Сб";
 "sunShort" = "Вс";
 
+
+"editTracker" = "Редактировать";
+"deleteTracker" = "Удалить";
+"pinTracker" = "Закрепить";
+"unpinTracker" = "Открепить";
+"alert.deleteTracker" = "Удалить";
+"alert.cancelDelete" = "Отменить";
+"alert.messageDeleteTracker" = "Уверены что хотите удалить трекер?";
+
+"header.editTracker" = "Редактирование привычки";
+"category.pid" = "Закрепленные";

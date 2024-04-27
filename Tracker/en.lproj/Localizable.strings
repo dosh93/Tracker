@@ -63,3 +63,10 @@
 
 "header.editTracker" = "Editing a habit";
 "category.pid" = "Pin";
+"filter" = "Filters";
+"filter.all" = "All trackers";
+"filter.today" = "Trackers for today";
+"filter.completed" = "Completed";
+"filter.notCompleted" = "Unfinished";
+
+"notFound" = "Nothing was found";

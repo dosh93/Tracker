@@ -142,8 +142,16 @@ final class TrackerStore: NSObject {
         }
     }
     
-    func filter(weekday: Weekday, searchText: String, date: Date) {
+    func filter(weekday: Weekday, searchText: String, date: Date, isCompleted: Bool?) {
         var predicts: [NSPredicate] = []
+        
+        if let isCompleted {
+            if isCompleted {
+                predicts.append(NSPredicate(format: "records.@count != 0"))
+            } else {
+                predicts.append(NSPredicate(format: "records.@count == 0"))
+            }
+        }
         
         if !searchText.isEmpty {
             predicts.append(NSPredicate(format: "%K CONTAINS[cd] %@", #keyPath(TrackerCoreData.name), searchText))

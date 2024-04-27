@@ -63,3 +63,10 @@
 
 "header.editTracker" = "Редактирование привычки";
 "category.pid" = "Закрепленные";
+"filter" = "Фильтры";
+"filter.all" = "Все трекеры";
+"filter.today" = "Трекеры на сегодня";
+"filter.completed" = "Завершенные";
+"filter.notCompleted" = "Не завершенные";
+
+"notFound" = "Ничего не найдено";

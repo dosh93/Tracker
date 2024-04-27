@@ -46,12 +46,29 @@ final class TrackerViewController: UIViewController {
         return image
     }()
     
-    private let trackersCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+    private let trackersCollectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 60, right: 0)
+        collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 60, right: 0)
+        collectionView.alwaysBounceVertical = true
+        return collectionView
+    }()
+    private lazy var filterButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .ypBlue
+        button.tintColor = .white
+        button.setTitle(NSLocalizedString("filter", comment: "Кнопка фильтры"), for: .normal)
+        button.addTarget(self, action: #selector(clickFilter), for: .touchUpInside)
+        button.layer.cornerRadius = 16
+        button.layer.masksToBounds = true
+        return button
+    }()
     private lazy var trackerStore = TrackerStore(delegate: self)
     private lazy var trackerRecordStore = TrackerRecordStore(delegate: self)
     private var currentSearchText: String = ""
     private var currentWeekDay: Weekday = Weekday.mon
     private var currentDate = Date().normalized
+    private var currentFilter = Filters.all
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,7 +86,7 @@ final class TrackerViewController: UIViewController {
         setVisibleTrackersByDate()
         registerTrackersCollection()
         
-        showPlaceholderIfNeeded()
+        showPlaceholderIfNeeded(isNotFound: false)
         setupConstraints()
         
         setTapGesture()
@@ -121,27 +138,56 @@ final class TrackerViewController: UIViewController {
     
     @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
         let selectedDate = sender.date
-        currentWeekDay = getWeekday(currentDate: selectedDate)
-        currentDate = selectedDate.normalized
-        searchTextFiled.text = ""
-        currentSearchText = ""
+        setDate(selectedDate)
         setVisibleTrackersByDate()
         trackersCollectionView.reloadData()
     }
     
-    private func filter() {
-        trackerStore.filter(weekday: currentWeekDay, searchText: currentSearchText, date: currentDate)
+    private func setDate(_ date: Date) {
+        currentWeekDay = getWeekday(currentDate: date)
+        currentDate = date.normalized
+        searchTextFiled.text = ""
+        currentSearchText = ""
     }
     
-    private func showPlaceholderIfNeeded() {
+    private func filter() {
+        switch currentFilter {
+        case .all:
+            trackerStore.filter(weekday: currentWeekDay, searchText: currentSearchText, date: currentDate, isCompleted: nil)
+        case .today:
+            trackerStore.filter(weekday: currentWeekDay, searchText: currentSearchText, date: currentDate, isCompleted: nil)
+        case .completed:
+            trackerStore.filter(weekday: currentWeekDay, searchText: currentSearchText, date: currentDate, isCompleted: true)
+        case .notCompleted:
+            trackerStore.filter(weekday: currentWeekDay, searchText: currentSearchText, date: currentDate, isCompleted: false)
+        }
+        
+    }
+    
+    private func setToday() {
+        let today = Date()
+        datePicker.date = today
+        setDate(today)
+        trackersCollectionView.reloadData()
+    }
+    
+    private func showPlaceholderIfNeeded(isNotFound: Bool) {
         let isVisibleTrackers = trackerStore.numberOfSections == 0
         trackersCollectionView.isHidden = isVisibleTrackers
         placeholderLabel.isHidden = !isVisibleTrackers
         placeholderImage.isHidden = !isVisibleTrackers
+        filterButton.isHidden = isVisibleTrackers
+        if isNotFound {
+            placeholderLabel.text = NSLocalizedString("notFound", comment: "")
+            placeholderImage.image = UIImage(named: "NotFound")
+        } else {
+            placeholderLabel.text = NSLocalizedString("placeholder.trackerList", comment: "Что будем отслеживать?")
+            placeholderImage.image = UIImage(named: "Placeholder")
+        }
     }
     
     private func setupConstraints(){
-        [searchTextFiled, placeholderLabel, placeholderImage, trackersCollectionView].forEach {
+        [searchTextFiled, placeholderLabel, placeholderImage, trackersCollectionView, filterButton].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
@@ -161,12 +207,17 @@ final class TrackerViewController: UIViewController {
             trackersCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             trackersCollectionView.topAnchor.constraint(equalTo: searchTextFiled.bottomAnchor, constant: 24),
             trackersCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
+            filterButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            filterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            filterButton.heightAnchor.constraint(equalToConstant: 50),
+            filterButton.widthAnchor.constraint(equalToConstant: 115),
         ])
     }
     
     private func setVisibleTrackersByDate() {
         filter()
-        showPlaceholderIfNeeded()
+        showPlaceholderIfNeeded(isNotFound: true)
         trackersCollectionView.reloadData()
     }
 
@@ -207,6 +258,12 @@ final class TrackerViewController: UIViewController {
     func changePinTracker(_ indexPath: IndexPath) {
         trackerStore.changePinTracker(indexPath)
         trackersCollectionView.reloadData()
+    }
+    
+    @objc func clickFilter() {
+        let viewController = FiltersViewController(filter: currentFilter)
+        viewController.delegate = self
+        present(viewController, animated: true)
     }
 }
 
@@ -353,7 +410,7 @@ extension TrackerViewController: UITextFieldDelegate {
         } else {
             currentSearchText = text
             setVisibleTrackersByDate()
-            showPlaceholderIfNeeded()
+            showPlaceholderIfNeeded(isNotFound: true)
         }
         trackersCollectionView.reloadData()
     }
@@ -386,8 +443,19 @@ extension TrackerViewController: CreateTrackerViewControllerDelegate {
 
 extension TrackerViewController: StoreDelegate {
     func didUpdate() {
-        showPlaceholderIfNeeded()
+        showPlaceholderIfNeeded(isNotFound: true)
         trackersCollectionView.reloadData()
     }
 }
 
+extension TrackerViewController: FilterViewControllerDelegate {
+    func selectFilter(_ filter: Filters) {
+        currentFilter = filter
+        
+        if (filter == .today) {
+            setToday()
+        }
+        
+        self.filter()
+    }
+}

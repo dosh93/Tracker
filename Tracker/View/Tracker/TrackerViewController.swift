@@ -9,6 +9,8 @@ import UIKit
 
 final class TrackerViewController: UIViewController {
     
+    weak var delegate: TrackersViewControllerDelegate?
+    
     private let datePicker: UIDatePicker = {
         let view = UIDatePicker()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -92,6 +94,16 @@ final class TrackerViewController: UIViewController {
         setTapGesture()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        Analysis.report(event: .open, screen: .main)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        Analysis.report(event: .close, screen: .main)
+    }
+    
     private func setTapGesture() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false
@@ -104,7 +116,8 @@ final class TrackerViewController: UIViewController {
         navigationBar.topItem?.title = NSLocalizedString("label.tracker", comment: "Трекеры")
         navigationBar.prefersLargeTitles = true
         navigationBar.topItem?.largeTitleDisplayMode = .always
-        
+        navigationBar.backgroundColor = .ypWhite
+
         let leftButton = UIBarButtonItem(
             image: UIImage(named: "PlusTask"),
             style: .plain,
@@ -131,6 +144,7 @@ final class TrackerViewController: UIViewController {
     
     
     @objc private func addTracker() {
+        Analysis.report(event: .click, screen: .main, item: .addTracker)
         let viewController = CreateTrackerViewController()
         viewController.delegate = self
         present(viewController, animated: true)
@@ -252,6 +266,7 @@ final class TrackerViewController: UIViewController {
     }
     
     func deleteTracker(_ indexPath: IndexPath) {
+        Analysis.report(event: .click, screen: .main, item: .delete)
         trackerStore.delete(indexPath)
     }
     
@@ -261,6 +276,7 @@ final class TrackerViewController: UIViewController {
     }
     
     @objc func clickFilter() {
+        Analysis.report(event: .click, screen: .main, item: .filter)
         let viewController = FiltersViewController(filter: currentFilter)
         viewController.delegate = self
         present(viewController, animated: true)
@@ -386,7 +402,9 @@ extension TrackerViewController: UICollectionViewDataSource {
 
 extension TrackerViewController: TrackerCellDelegate {
     func trackerCompleted(for id: UUID, at indexPath: IndexPath) {
+        Analysis.report(event: .click, screen: .main, item: .track)
         trackerRecordStore.completed(at: id, date: currentDate)
+        delegate?.updateStatistic()
         trackersCollectionView.reloadItems(at: [indexPath])
     }
     

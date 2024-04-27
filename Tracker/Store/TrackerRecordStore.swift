@@ -119,6 +119,14 @@ final class TrackerRecordStore: NSObject {
             
         }
     }
+    
+    func countCompleted() -> Int {
+        let fetchRequest = fetchedResultsController.fetchRequest
+        
+        guard let objects = try? context.fetch(fetchRequest) else { return 0 }
+        
+        return objects.count
+    }
 }
 
 extension TrackerRecordStore: NSFetchedResultsControllerDelegate {

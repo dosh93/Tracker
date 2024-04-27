@@ -70,3 +70,7 @@
 "filter.notCompleted" = "Не завершенные";
 
 "notFound" = "Ничего не найдено";
+
+"statistic.header" = "Статистика";
+"statistic.trackerCompleted" = "Трекеров завершено";
+"statistic.empty" = "Анализировать пока нечего";

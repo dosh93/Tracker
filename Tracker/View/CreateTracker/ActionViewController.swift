@@ -288,10 +288,10 @@ extension ActionViewController: UITableViewDelegate {
         if indexPath.item == 0 {
             tableView.deselectRow(at: indexPath, animated: true)
             let viewController = CategoryViewController()
+            viewController.delegate = self
             viewController.category = currentCategory
             let viewModel = CategoryViewModel(model: TrackerCategoryStore())
             viewController.initialize(viewModel: viewModel)
-            viewController.presentationController?.delegate = self
             present(viewController, animated: true)
         } else {
             let viewController = SheduleViewController()
@@ -352,11 +352,9 @@ extension ActionViewController: EmojiAndColorCollectionViewDelegate {
     }
 }
 
-extension ActionViewController: UIAdaptivePresentationControllerDelegate {
-    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        if let viewController = presentationController.presentedViewController as? CategoryViewController {
-            currentCategory =  viewController.category
-            categoryAndSheduleTableView.reloadData()
-        }
+extension ActionViewController: CreateCategoryViewControllerDelegate {
+    func setCategory(_ category: String) {
+        currentCategory = category
+        categoryAndSheduleTableView.reloadData()
     }
 }

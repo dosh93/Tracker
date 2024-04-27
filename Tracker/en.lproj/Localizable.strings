@@ -70,3 +70,7 @@
 "filter.notCompleted" = "Unfinished";
 
 "notFound" = "Nothing was found";
+
+"statistic.header" = "Statistics";
+"statistic.trackerCompleted" = "Trackers completed";
+"statistic.empty" = "There is nothing to analyze yet";

@@ -7,5 +7,6 @@
 
 import Foundation
 
-protocol CreateCategoryViewControllerDelegate {
+protocol CreateCategoryViewControllerDelegate: AnyObject {
+    func setCategory(_ category: String)
 }

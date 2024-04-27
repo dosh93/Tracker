@@ -147,9 +147,9 @@ final class TrackerStore: NSObject {
         
         if let isCompleted {
             if isCompleted {
-                predicts.append(NSPredicate(format: "records.@count != 0"))
+                predicts.append(NSPredicate(format: "SUBQUERY(records, $record, $record.date == %@).@count > 0", date as CVarArg))
             } else {
-                predicts.append(NSPredicate(format: "records.@count == 0"))
+                predicts.append(NSPredicate(format: "SUBQUERY(records, $record, $record.date == %@).@count == 0", date as CVarArg))
             }
         }
         

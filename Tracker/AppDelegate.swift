@@ -13,8 +13,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        let configuration = AppMetricaConfiguration(apiKey: "7ad1aa54-da7f-4837-9040-dc52006c2dc9")
-        AppMetrica.activate(with: configuration!)
+        Analysis.setup()
         return true
     }
 
@@ -34,7 +33,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func createMainAppViewController() -> UIViewController {
         let trackerVC = TrackerViewController()
-        let statisticsVC = StatisticsController()
+        let statisticsVC = StatisticsViewController()
+        trackerVC.delegate = statisticsVC
 
         let trackerImage = UIImage(named: "Tracker")
         let statisticsImage = UIImage(named: "Stats")
@@ -48,6 +48,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let tabBarController = UITabBarController()
         tabBarController.viewControllers = [trackerNavController, statisticsNavController]
         tabBarController.tabBar.tintColor = .ypBlue
+        tabBarController.tabBar.backgroundColor = .ypWhite
+        let topLine = UIView(frame: CGRect(x: 0, y: 0, width: tabBarController.tabBar.frame.width, height: 1))
+        topLine.backgroundColor = UIColor.gray.withAlphaComponent(0.5)
+        tabBarController.tabBar.addSubview(topLine)
 
         return tabBarController
     }

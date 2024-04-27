@@ -9,6 +9,8 @@ import UIKit
 
 final class CategoryViewController: UIViewController {
     
+    weak var delegate: CreateCategoryViewControllerDelegate?
+    
     private let headerLabel: UILabel = {
         let label = UILabel()
         label.textColor = .ypBlack
@@ -145,9 +147,9 @@ final class CategoryViewController: UIViewController {
 
 extension CategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
         category = viewModel?.getCategory(indexPath) ?? ""
-        tableView.reloadData()
+        delegate?.setCategory(category)
+        dismiss(animated: true)
     }
 }
 

@@ -1,0 +1,76 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Dosh on 18.04.2024.
+  
+*/
+"onboarding.page1.label" = "Отслеживайте только то, что хотите";
+"onboarding.page2.label" = "Даже если это не литры воды и йога";
+"onboarding.button" = "Вот это технологии!";
+
+"header.category" = "Категория";
+"button.addCategory" = "Добавить категорию";
+"placeholder.category" = "Привычки и события можно объединить по смыслу";
+
+"header.newCategory" = "Новая категория";
+"placeholder.input.newCategory" = "Введите название категории";
+"button.done" = "Готово";
+
+"header.createTracker" = "Создание трекера";
+"button.habit" = "Привычка";
+"button.irregularEvents" = "Нерегулярные событие";
+"header.habit" = "Новая привычка";
+"header.irregularEvents" = "Новое нерегулярное событие";
+
+"header.schedule" = "Расписание";
+
+"placeholder.input.nameTracker" = "Введите название трекера";
+"error.limitSymbol" = "Ограничение 38 символов";
+"button.create" = "Создать";
+"button.cancel" = "Отменить";
+"button.save" = "Сохранить";
+"everyDay" = "Каждый день";
+"search" = "Поиск";
+"placeholder.trackerList" = "Что будем отслеживать?";
+"label.tracker" = "Трекеры";
+"label.statistic" = "Статистика";
+
+"mon" = "Понедельник";
+"tue" = "Вторник";
+"wed" = "Среда";
+"thu" = "Четверг";
+"fri" = "Пятница";
+"sat" = "Суббота";
+"sun" = "Воскресенье";
+
+"monShort" = "Пн";
+"tueShort" = "Вт";
+"wedShort" = "Ср";
+"thuShort" = "Чт";
+"friShort" = "Пт";
+"satShort" = "Сб";
+"sunShort" = "Вс";
+
+
+"editTracker" = "Редактировать";
+"deleteTracker" = "Удалить";
+"pinTracker" = "Закрепить";
+"unpinTracker" = "Открепить";
+"alert.deleteTracker" = "Удалить";
+"alert.cancelDelete" = "Отменить";
+"alert.messageDeleteTracker" = "Уверены что хотите удалить трекер?";
+
+"header.editTracker" = "Редактирование привычки";
+"category.pid" = "Закрепленные";
+"filter" = "Фильтры";
+"filter.all" = "Все трекеры";
+"filter.today" = "Трекеры на сегодня";
+"filter.completed" = "Завершенные";
+"filter.notCompleted" = "Не завершенные";
+
+"notFound" = "Ничего не найдено";
+
+"statistic.header" = "Статистика";
+"statistic.trackerCompleted" = "Трекеров завершено";
+"statistic.empty" = "Анализировать пока нечего";

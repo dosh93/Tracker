@@ -15,28 +15,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
-        
-        let trackerVC = TrackerViewController()
-        let statisticsVC = StatisticsController()
-        
-        let trackerImage = UIImage(named: "Tracker")
-        let statisticsImage = UIImage(named: "Stats")
-        
-        trackerVC.tabBarItem = UITabBarItem(title: "Трекеры", image: trackerImage, tag: 0)
-        statisticsVC.tabBarItem = UITabBarItem(title: "Статистика", image: statisticsImage, tag: 1)
-        
-        let trackerNavController = UINavigationController(rootViewController: trackerVC)
-        let statisticsNavController = UINavigationController(rootViewController: statisticsVC)
-        
-        let tabBarController = UITabBarController()
-        tabBarController.viewControllers = [trackerNavController, statisticsNavController]
-        
-        tabBarController.tabBar.tintColor = .ypBlue
-        
-        window?.rootViewController = tabBarController
+
+        if UserDefaultsManager.shared.hasOnboarded() {
+            let mainAppViewController = (UIApplication.shared.delegate as? AppDelegate)?.createMainAppViewController()
+            window?.rootViewController = mainAppViewController
+        } else {
+            window?.rootViewController = OnboardingPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal)
+        }
         window?.makeKeyAndVisible()
     }
-
+    
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.

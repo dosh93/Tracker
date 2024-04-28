@@ -12,7 +12,7 @@ final class SheduleViewController: UIViewController {
     weak var delegate: SheduleViewControllerDelegate?
     private let headerLabel: UILabel = {
         let view = UILabel()
-        view.text = "Расписание"
+        view.text = NSLocalizedString("header.schedule", comment: "Заголовок расписания")
         view.textColor = .ypBlack
         view.textAlignment = .center
         view.font = .systemFont(ofSize: 16, weight: .medium)
@@ -32,7 +32,7 @@ final class SheduleViewController: UIViewController {
     
     private let setSheduleButton: UIButton = {
         let view = UIButton()
-        view.setTitle("Готово", for: .normal)
+        view.setTitle(NSLocalizedString("button.done", comment: "Кнопка готово"), for: .normal)
         view.setTitleColor(.ypWhite, for: .normal)
         view.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         view.backgroundColor = .ypBlack
@@ -109,7 +109,7 @@ extension SheduleViewController: UITableViewDataSource {
                 self?.selectedWeekdays.removeAll { $0 == day }
             }
         }
-        cell.textLabel?.text = day.rawValue
+        cell.textLabel?.text = day.localizedName
         cell.representedDay = day
         return cell
     }

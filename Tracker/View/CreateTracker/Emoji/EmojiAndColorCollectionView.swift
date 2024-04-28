@@ -29,6 +29,13 @@ class EmojiAndColorCollectionView: NSObject, UICollectionViewDelegateFlowLayout,
     private var selectedEmojiIndexPath: IndexPath?
     private var selectedColorIndexPath: IndexPath?
     weak var delegate: EmojiAndColorCollectionViewDelegate?
+    private var selectedEmoji: String?
+    private var selectedColor: UIColor?
+    
+    init(emoji: String?, color: UIColor?) {
+        selectedEmoji = emoji
+        selectedColor = color
+    }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let availableWidth = collectionView.frame.width - 16 * 2 - 5 * 6
@@ -67,11 +74,19 @@ class EmojiAndColorCollectionView: NSObject, UICollectionViewDelegateFlowLayout,
         switch sectionItem {
             
         case.emoji(let emoji):
+            if emoji == selectedEmoji {
+                selectedEmojiIndexPath = indexPath
+                selectedEmoji = nil
+            }
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EmojiCollectionViewCell.identifier, for: indexPath) as? EmojiCollectionViewCell else { return UICollectionViewCell() }
             cell.setCell(emoji: emoji, isSelect: selectedEmojiIndexPath == indexPath)
             return cell
             
         case .color(let color):
+            if color.toHexString() == selectedColor?.toHexString() {
+                selectedColorIndexPath = indexPath
+                selectedColor = nil
+            }
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ColorCollectionViewCell.identifier, for: indexPath) as? ColorCollectionViewCell else { return UICollectionViewCell() }
             cell.setCell(color: color, isSelect: selectedColorIndexPath == indexPath)
             return cell

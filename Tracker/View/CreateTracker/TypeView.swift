@@ -11,6 +11,9 @@ struct SettingActionView {
     let header: String
     let tableCount: Int
     let type: TypeView
+    var tracker: Tracker? = nil
+    var countCompleted: Int? = nil
+    var category: String? = nil
 }
 
 enum TypeView {

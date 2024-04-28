@@ -1,0 +1,76 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Dosh on 18.04.2024.
+  
+*/
+"onboarding.page1.label" = "Track only what you want";
+"onboarding.page2.label" = "Even if it's not liters of water and yoga";
+"onboarding.button" = "This is technology!";
+
+"header.category" = "Category";
+"button.addCategory" = "Add a category";
+"placeholder.category" = "Habits and events can be combined in meaning";
+
+"header.newCategory" = "New category";
+"placeholder.input.newCategory" = "Enter the category name";
+"button.done" = "Done";
+
+"header.createTracker" = "Creating a tracker";
+"button.habit" = "Habit";
+"button.irregularEvents" = "Irregular event";
+"header.habit" = "New habit";
+"header.irregularEvents" = "New irregular event";
+
+"header.schedule" = "Schedule";
+
+"placeholder.input.nameTracker" = "Enter the name of the tracker";
+"error.limitSymbol" = "38 character limit";
+"button.create" = "Create";
+"button.cancel" = "Cancel";
+"button.save" = "Save";
+"everyDay" = "Every day";
+"search" = "Search";
+"placeholder.trackerList" = "What will we track?";
+"label.tracker" = "Trackers";
+"label.statistic" = "Statistics";
+
+"mon" = "Monday";
+"tue" = "Tuesday";
+"wed" = "Wednesday";
+"thu" = "Thursday";
+"fri" = "Friday";
+"sat" = "Saturday";
+"sun" = "Sunday";
+
+"monShort" = "Mon";
+"tueShort" = "Tue";
+"wedShort" = "Wed";
+"thuShort" = "Thu";
+"friShort" = "Fri";
+"satShort" = "Sat";
+"sunShort" = "Sun";
+
+
+"editTracker" = "Edit";
+"deleteTracker" = "Delete";
+"pinTracker" = "Pin";
+"unpinTracker" = "Unpin";
+"alert.deleteTracker" = "Delete";
+"alert.cancelDelete" = "Cancel";
+"alert.messageDeleteTracker" = "Are you sure you want to delete the tracker?";
+
+"header.editTracker" = "Editing a habit";
+"category.pid" = "Pin";
+"filter" = "Filters";
+"filter.all" = "All trackers";
+"filter.today" = "Trackers for today";
+"filter.completed" = "Completed";
+"filter.notCompleted" = "Unfinished";
+
+"notFound" = "Nothing was found";
+
+"statistic.header" = "Statistics";
+"statistic.trackerCompleted" = "Trackers completed";
+"statistic.empty" = "There is nothing to analyze yet";

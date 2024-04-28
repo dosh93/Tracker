@@ -9,8 +9,7 @@ import UIKit
 
 final class ActionViewController: UIViewController {
     
-    weak var delegate: CreateTrackerViewControllerDelegate?
-    
+    weak var createDelegate: CreateTrackerViewControllerDelegate?
     
     private let scrollView: UIScrollView = {
         let view = UIScrollView()
@@ -34,9 +33,18 @@ final class ActionViewController: UIViewController {
         return view
     }()
     
+    private let countDayLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .ypBlack
+        label.textAlignment = .center
+        label.font = .systemFont(ofSize: 32, weight: .bold)
+        label.isHidden = true
+        return label
+    }()
+    
     private let nameTextField: UITextField = {
         let view = UITextField()
-        view.placeholder = "Введите название трекера"
+        view.placeholder = NSLocalizedString("placeholder.input.nameTracker", comment: "Плейсзолдре имя трекера")
         view.backgroundColor = .ypBackground
         view.layer.cornerRadius = 16
         view.layer.masksToBounds = true
@@ -49,7 +57,7 @@ final class ActionViewController: UIViewController {
     
     private let errorLabel: UILabel = {
         let view = UILabel()
-        view.text = "Ограничение 38 символов"
+        view.text = NSLocalizedString("error.limitSymbol", comment: "Ошибка ограничения символов")
         view.font = .systemFont(ofSize: 17, weight: .regular)
         view.textColor = .ypRed
         view.textAlignment = .center
@@ -74,7 +82,7 @@ final class ActionViewController: UIViewController {
         return view
     }()
     
-    private let emojiAndColorCollictionManager = EmojiAndColorCollectionView()
+    private var emojiAndColorCollictionManager = EmojiAndColorCollectionView(emoji: nil, color: nil)
     
     private let stackButtonsView: UIStackView = {
         let view = UIStackView()
@@ -86,7 +94,7 @@ final class ActionViewController: UIViewController {
     
     private let createActionButton: UIButton = {
         let view = UIButton()
-        view.setTitle("Создать", for: .normal)
+        view.setTitle(NSLocalizedString("button.create", comment: "Кнопка создать"), for: .normal)
         view.setTitleColor(.ypWhite, for: .normal)
         view.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         view.backgroundColor = .ypGray
@@ -98,7 +106,7 @@ final class ActionViewController: UIViewController {
     
     private let cancelButton: UIButton = {
         let view = UIButton()
-        view.setTitle("Отменить", for: .normal)
+        view.setTitle(NSLocalizedString("button.cancel", comment: "Кнопка создать"), for: .normal)
         view.setTitleColor(.ypRed, for: .normal)
         view.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         view.backgroundColor = .ypWhite
@@ -109,7 +117,7 @@ final class ActionViewController: UIViewController {
         return view
     }()
     
-    private var currentCategory = "Регулярно важно"
+    private var currentCategory = ""
     private var currentShedule: [Weekday] = []
     private var emoji: String = ""
     private var color: UIColor? = nil
@@ -122,7 +130,6 @@ final class ActionViewController: UIViewController {
         
         if setting.type == TypeView.unregular {
             currentShedule = Weekday.allCases
-            currentCategory = "Важно"
         }
         
         super.init(nibName: nil, bundle: nil)
@@ -135,6 +142,24 @@ final class ActionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .ypWhite
+        
+        if let tracker = setting.tracker {
+            emoji = tracker.emoji
+            color = tracker.color
+            currentShedule = tracker.schedule
+            nameTextField.text = tracker.name
+            emojiAndColorCollictionManager = EmojiAndColorCollectionView(emoji: emoji, color: color)
+            createActionButton.setTitle(NSLocalizedString("button.save", comment: "Кнопка сохранить"), for: .normal)
+        }
+        
+        if let category = setting.category {
+            currentCategory = category
+        }
+        
+        if let countCompleted = setting.countCompleted {
+            countDayLabel.isHidden = false
+            countDayLabel.text = String.localizedStringWithFormat(NSLocalizedString("numberOfTracker", comment: "Количество затреканный дней"), countCompleted)
+        }
         
         categoryAndSheduleTableView.delegate = self
         categoryAndSheduleTableView.dataSource = self
@@ -178,7 +203,7 @@ final class ActionViewController: UIViewController {
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.layoutMargins = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         
-        [headerLabel, nameTextField, errorLabel, categoryAndSheduleTableView, emojiAndColorCollictionView, stackButtonsView].forEach {
+        [headerLabel, countDayLabel, nameTextField, errorLabel, categoryAndSheduleTableView, emojiAndColorCollictionView, stackButtonsView].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             stackView.addArrangedSubview($0)
         }
@@ -189,6 +214,7 @@ final class ActionViewController: UIViewController {
         }
         
         stackView.setCustomSpacing(14, after: headerLabel)
+        stackView.setCustomSpacing(40, after: countDayLabel)
         stackView.setCustomSpacing(24, after: nameTextField)
         stackView.setCustomSpacing(34, after: categoryAndSheduleTableView)
         stackView.setCustomSpacing(24, after: emojiAndColorCollictionView)
@@ -223,8 +249,9 @@ final class ActionViewController: UIViewController {
     @objc
     private func createAction() {
         let nameText = nameTextField.text ?? ""
-        let tracker = Tracker(id: UUID.init(), name: nameText, color: color ?? .ypColor1, emoji: emoji, schedule: currentShedule, isRegular: setting.type == TypeView.regular)
-        delegate?.createTracker(tracker, currentCategory)
+        let uuid = setting.tracker?.id ?? UUID.init()
+        let tracker = Tracker(id: uuid, name: nameText, color: color ?? .ypColor1, emoji: emoji, schedule: currentShedule, isRegular: setting.type == TypeView.regular, isPinned: setting.tracker?.isPinned ?? false)
+        createDelegate?.createTracker(tracker, currentCategory)
     }
     
     private func checkRequiredField() {
@@ -258,13 +285,19 @@ extension ActionViewController: UITextFieldDelegate {
 
 extension ActionViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //if  indexPath.item == 0 {
-        //    tableView.deselectRow(at: indexPath, animated: true)
-        //} else {
+        if indexPath.item == 0 {
+            tableView.deselectRow(at: indexPath, animated: true)
+            let viewController = CategoryViewController()
+            viewController.delegate = self
+            viewController.category = currentCategory
+            let viewModel = CategoryViewModel(model: TrackerCategoryStore())
+            viewController.initialize(viewModel: viewModel)
+            present(viewController, animated: true)
+        } else {
             let viewController = SheduleViewController()
             viewController.delegate = self
             present(viewController, animated: true)
-        //}
+        }
     }
 }
 
@@ -278,21 +311,21 @@ extension ActionViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: SettingActionCell.identifer, for: indexPath) as? SettingActionCell else {
             return UITableViewCell()
         }
-        //if indexPath.item == 0 {
-        //    cell.textLabel?.text = "Категория"
-        //    cell.detailTextLabel?.text = currentCategory
-        //    cell.selectionStyle = .none
-        //} else {
-            cell.textLabel?.text = "Расписание"
+        if indexPath.item == 0 {
+            cell.textLabel?.text = NSLocalizedString("header.category", comment: "Заголовок категории")
+            cell.detailTextLabel?.text = currentCategory
+            cell.selectionStyle = .none
+        } else {
+            cell.textLabel?.text = NSLocalizedString("header.schedule", comment: "Заголовок расписания")
             let shorName = currentShedule.map { $0.getShortDayName }
             if shorName.count == 7 {
-                cell.detailTextLabel?.text = "Каждый день"
+                cell.detailTextLabel?.text = NSLocalizedString("everyDay", comment: "Каждый день")
             } else if !shorName.isEmpty {
                 cell.detailTextLabel?.text = shorName.joined(separator: ", ")
             } else {
                 cell.detailTextLabel?.text = nil
             }
-        //}
+        }
         
         cell.backgroundColor = .ypBackground
         return cell
@@ -316,5 +349,12 @@ extension ActionViewController: EmojiAndColorCollectionViewDelegate {
     func selectEmoji(_ emoji: String) {
         self.emoji = emoji
         checkRequiredField()
+    }
+}
+
+extension ActionViewController: CreateCategoryViewControllerDelegate {
+    func setCategory(_ category: String) {
+        currentCategory = category
+        categoryAndSheduleTableView.reloadData()
     }
 }

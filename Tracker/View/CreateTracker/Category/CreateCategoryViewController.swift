@@ -9,7 +9,7 @@ import UIKit
 
 final class CreateCategoryViewController: UIViewController {
     
-    private let headerLabel: UILabel = {
+    private lazy var headerLabel: UILabel = {
         let label = UILabel()
         label.textColor = .ypBlack
         label.textAlignment = .center
@@ -45,9 +45,9 @@ final class CreateCategoryViewController: UIViewController {
         return button
     }()
     
-    private var viewModel: CategoryViewModel?
+    private var viewModel: CategoryViewModelProtocol?
     
-    func initialize(viewModel: CategoryViewModel) {
+    func initialize(viewModel: CategoryViewModelProtocol) {
         self.viewModel = viewModel
     }
     

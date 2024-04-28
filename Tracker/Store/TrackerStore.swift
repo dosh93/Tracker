@@ -143,41 +143,46 @@ final class TrackerStore: NSObject {
     }
     
     func filter(weekday: Weekday, searchText: String, date: Date, isCompleted: Bool?) {
-        var predicts: [NSPredicate] = []
-        
-        if let isCompleted {
-            if isCompleted {
-                predicts.append(NSPredicate(format: "SUBQUERY(records, $record, $record.date == %@).@count > 0", date as CVarArg))
-            } else {
-                predicts.append(NSPredicate(format: "SUBQUERY(records, $record, $record.date == %@).@count == 0", date as CVarArg))
-            }
-        }
-        
+        var predicates: [NSPredicate] = []
+
+        predicates.append(NSPredicate(format: "%K CONTAINS[cd] %@", #keyPath(TrackerCoreData.schedule), weekday.rawValue))
+
         if !searchText.isEmpty {
-            predicts.append(NSPredicate(format: "%K CONTAINS[cd] %@", #keyPath(TrackerCoreData.name), searchText))
+            predicates.append(NSPredicate(format: "%K CONTAINS[cd] %@", #keyPath(TrackerCoreData.name), searchText))
         }
-        
-        predicts.append(NSPredicate(format: "%K CONTAINS[cd] %@", #keyPath(TrackerCoreData.schedule), weekday.rawValue))
-        
-        let regularPredicate = NSPredicate(format: "isRegular == YES")
 
-        let datePredicate = NSPredicate(format: "SUBQUERY(records, $record, $record.date == %@).@count > 0", date as CVarArg)
-        let noRecordsPredicate = NSPredicate(format: "records.@count == 0")
-        let recordsOrNoRecordsPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [datePredicate, noRecordsPredicate])
-        let irregularWithConditionPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
-            NSPredicate(format: "isRegular == NO"),
-            recordsOrNoRecordsPredicate
-        ])
+        func createConditionPredicate(forDate date: Date) -> NSCompoundPredicate {
+            let datePredicate = NSPredicate(format: "SUBQUERY(records, $record, $record.date == %@).@count > 0", date as CVarArg)
+            let noRecordsPredicate = NSPredicate(format: "records.@count == 0")
+            let recordsOrNoRecordsPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [datePredicate, noRecordsPredicate])
+            
+            let regularPredicate = NSPredicate(format: "isRegular == YES")
+            let irregularPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+                NSPredicate(format: "isRegular == NO"),
+                recordsOrNoRecordsPredicate
+            ])
+            
+            return NSCompoundPredicate(orPredicateWithSubpredicates: [regularPredicate, irregularPredicate])
+        }
 
-        let combinedPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [regularPredicate, irregularWithConditionPredicate])
+        if let isCompleted = isCompleted {
+            if isCompleted {
+                predicates.append(NSPredicate(format: "SUBQUERY(records, $record, $record.date == %@).@count > 0", date as CVarArg))
+            } else {
+                predicates.append(NSPredicate(format: "SUBQUERY(records, $record, $record.date == %@).@count == 0", date as CVarArg))
+                predicates.append(createConditionPredicate(forDate: date))
+            }
+        } else {
+            predicates.append(createConditionPredicate(forDate: date))
+        }
 
-        predicts.append(combinedPredicate)
-        var predictsForPin = predicts
-        predictsForPin.append(NSPredicate(format: "isPinned == YES"))
-        pinnedfetchedResultsController.fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predictsForPin)
+        var predicatesForPin = predicates
+        predicatesForPin.append(NSPredicate(format: "isPinned == YES"))
+        pinnedfetchedResultsController.fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicatesForPin)
         
-        predicts.append(NSPredicate(format: "isPinned != YES"))
-        fetchedResultsController.fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicts)
+        predicates.append(NSPredicate(format: "isPinned != YES"))
+        fetchedResultsController.fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        
         do {
             try fetchedResultsController.performFetch()
             try pinnedfetchedResultsController.performFetch()
@@ -186,7 +191,7 @@ final class TrackerStore: NSObject {
             print(error.localizedDescription)
         }
     }
-    
+
     func numberOfRowsInSection(_ section: Int) -> Int {
         var currentSection = section
         if (!isEmptyPin() && section == 0) {

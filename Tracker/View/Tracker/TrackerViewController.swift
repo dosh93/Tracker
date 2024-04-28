@@ -53,6 +53,7 @@ final class TrackerViewController: UIViewController {
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 60, right: 0)
         collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 60, right: 0)
         collectionView.alwaysBounceVertical = true
+        collectionView.backgroundColor = .ypWhite
         return collectionView
     }()
     private lazy var filterButton: UIButton = {
@@ -175,7 +176,6 @@ final class TrackerViewController: UIViewController {
         case .notCompleted:
             trackerStore.filter(weekday: currentWeekDay, searchText: currentSearchText, date: currentDate, isCompleted: false)
         }
-        
     }
     
     private func setToday() {
@@ -191,13 +191,8 @@ final class TrackerViewController: UIViewController {
         placeholderLabel.isHidden = !isVisibleTrackers
         placeholderImage.isHidden = !isVisibleTrackers
         filterButton.isHidden = isVisibleTrackers
-        if isNotFound {
-            placeholderLabel.text = NSLocalizedString("notFound", comment: "")
-            placeholderImage.image = UIImage(named: "NotFound")
-        } else {
-            placeholderLabel.text = NSLocalizedString("placeholder.trackerList", comment: "Что будем отслеживать?")
-            placeholderImage.image = UIImage(named: "Placeholder")
-        }
+        placeholderLabel.text = isNotFound ? NSLocalizedString("notFound", comment: "") : NSLocalizedString("placeholder.trackerList", comment: "Что будем отслеживать?")
+        placeholderImage.image = isNotFound ? UIImage(named: "NotFound") : UIImage(named: "Placeholder")
     }
     
     private func setupConstraints(){

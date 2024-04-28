@@ -9,7 +9,7 @@ import Foundation
 
 typealias Binding = () -> Void
 
-final class CategoryViewModel {
+final class CategoryViewModel: CategoryViewModelProtocol {
     
     var updateCategory: Binding?
     

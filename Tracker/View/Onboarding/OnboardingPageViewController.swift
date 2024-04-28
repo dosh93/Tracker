@@ -8,7 +8,7 @@
 import UIKit
 
 final class OnboardingPageViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
-    lazy var pages: [UIViewController] = {
+    private lazy var pages: [UIViewController] = {
         let page1 = OnboardingViewController(backgrouadName: "onboarding1", labelText:  NSLocalizedString("onboarding.page1.label", comment: "Текст онбординга"))
        
         let page2 = OnboardingViewController(backgrouadName: "onboarding2", labelText:  NSLocalizedString("onboarding.page2.label", comment: "Текст онбординга"))
@@ -16,7 +16,7 @@ final class OnboardingPageViewController: UIPageViewController, UIPageViewContro
         return [page1, page2]
     }()
     
-    lazy var pageControl: UIPageControl = {
+    private lazy var pageControl: UIPageControl = {
         let pageControl = UIPageControl()
         pageControl.numberOfPages = pages.count
         pageControl.currentPage = 0
@@ -28,7 +28,7 @@ final class OnboardingPageViewController: UIPageViewController, UIPageViewContro
         return pageControl
     }()
     
-    lazy var button: UIButton = {
+    private lazy var button: UIButton = {
         let button = UIButton()
         button.setTitle(NSLocalizedString("onboarding.button", comment: "Кнопка перехода к основному приложению"), for: .normal)
         button.layer.cornerRadius = 16
